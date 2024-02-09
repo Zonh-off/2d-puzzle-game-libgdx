@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.utils.Assets;
 import com.mygdx.game.utils.TileMapHelper;
 
 import static com.mygdx.game.utils.Constants.*;
@@ -22,13 +23,6 @@ public class GameScreen implements Screen {
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
     private SpriteBatch batch;
-
-/*    private float zSpeed = 0;
-    private float jumpSpeed = -.035f;
-    private float gameGravity = .1f;
-    private float z = 0;
-    private float zFloor = 0;*/
-
     private Player player;
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TiledMap map;
@@ -60,9 +54,9 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         update(Gdx.graphics.getDeltaTime());
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0.06f, 0.06f, 0.08f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(0.06f, 0.06f, 0.08f, 1);
 
         orthogonalTiledMapRenderer.render();
         box2DDebugRenderer.render(world, camera.combined.scl(PPM));

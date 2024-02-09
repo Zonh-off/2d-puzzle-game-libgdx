@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.utils.Assets;
+
+import java.util.Objects;
 
 import static com.mygdx.game.utils.Constants.*;
 import static com.mygdx.game.utils.Constants.PPM;
@@ -16,19 +19,21 @@ public class Player {
 
     private float speed = 5f;
     private Vector2 vel = new Vector2(0, 0);
-
-    float idleStateTime = 1;
-    float walkStateTime = 4;
+    private Vector2 lastVel = new Vector2(1, 0);
+    private float idleStateTime = 1;
+    private float walkStateTime = 4;
     private float zSpeed = 0;
-    private float jumpSpeed = -.035f;
-    private float gameGravity = .1f;
+    private float jumpSpeed = -.1f;
+    private float gameGravity = .2f;
     private float z = 0;
     private float zFloor = 0;
+
+    private float jumpZ;
+    private boolean isJumping;
 
     public Player(Vector2 startPosition, World world) {
         super();
         this.world = world;
-        vel = startPosition;
 
         bPlayer = createBody(startPosition.x, startPosition.y, 32, 32, false, BIT_PLAYER, BIT_WALL, (short) 0);
     }
@@ -38,37 +43,45 @@ public class Player {
     }
 
     public void updateAnimation(float delta, SpriteBatch batch) {
+        walkStateTime -= delta;
+        if(walkStateTime < 0)
+            walkStateTime = 4;
 
-        if(vel.isZero()) {
-            idleStateTime -= delta;
-            if(idleStateTime < 0)
-                idleStateTime = 4;
+        idleStateTime -= delta;
+        if(idleStateTime < 0)
+            idleStateTime = 1;
 
-            batch.draw(
-                    (TextureRegion) Assets.idle_down_anim.getKeyFrame(idleStateTime, true),
-                    GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
-                    GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
-        }
         if(vel.x > 0) {
-            walkStateTime -= delta;
-            if(walkStateTime < 0)
-                walkStateTime = 4;
-
-            batch.draw(
-                    (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true),
-                    GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
-                    GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true));
         }
         if(vel.x < 0){
-            walkStateTime -= delta;
-            if(walkStateTime < 0)
-                walkStateTime = 4;
-
-            batch.draw(
-                    (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true),
-                    GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
-                    GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true));
         }
+        if(vel.y > 0 && lastVel.x > 0 ) {
+            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true));
+        }
+        if(vel.y > 0 && lastVel.x < 0 ) {
+            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true));
+        }
+        if(vel.y < 0 && lastVel.x > 0 ) {
+            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true));
+        }
+        if(vel.y < 0 && lastVel.x < 0 ) {
+            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true));
+        }
+        if(lastVel.x > 0 && vel.isZero()) {
+            setBatchTexture(batch, (TextureRegion) Assets.idle_right_anim.getKeyFrame(walkStateTime, true));
+        }
+        if(lastVel.x < 0 && vel.isZero()) {
+            setBatchTexture(batch, (TextureRegion) Assets.idle_left_anim.getKeyFrame(walkStateTime, true));
+        }
+    }
+
+    private void setBatchTexture(SpriteBatch batch, TextureRegion texture) {
+        batch.draw(
+                texture,
+                GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
+                GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
     }
 
     public Vector2 GetPosition() {
@@ -79,20 +92,56 @@ public class Player {
         vel.x = 0;
         vel.y = 0;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
+        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             vel.x += 1;
+            lastVel.x = 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+        if(Gdx.input.isKeyPressed(Input.Keys.A)) {
             vel.x -= 1;
+            lastVel.x = -1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
+        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
             vel.y += 1;
+            lastVel.y = 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
+        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
             vel.y -= 1;
+            lastVel.y = -1;
         }
 
+        if(Objects.equals(vel, new Vector2(1, 1)))
+            vel = new Vector2(ONE_ON_ROOT_TWO, ONE_ON_ROOT_TWO);
+        if(Objects.equals(vel, new Vector2(-1, -1)))
+            vel = new Vector2(-ONE_ON_ROOT_TWO, -ONE_ON_ROOT_TWO);
+        if(Objects.equals(vel, new Vector2(-1, 1)))
+            vel = new Vector2(-ONE_ON_ROOT_TWO, ONE_ON_ROOT_TWO);
+        if(Objects.equals(vel, new Vector2(1, -1)))
+            vel = new Vector2(ONE_ON_ROOT_TWO, -ONE_ON_ROOT_TWO);
+
+/*        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && zSpeed == 0){
+            isJumping = true;
+            jumpZ = bPlayer.getPosition().y;
+            zSpeed = jumpSpeed;
+        }
+        if(z != zFloor){
+            zSpeed += gameGravity * deltaTime;
+        }
+        if(z + zSpeed > zFloor){
+            zSpeed = 0;
+            z = zFloor;
+            isJumping = false;
+        }
+        z += zSpeed;
+
+        if(isJumping){
+            bPlayer.setTransform(bPlayer.getPosition().x,  jumpZ - z,0);
+        } else {
+            bPlayer.setLinearVelocity(vel.x * speed, vel.y * speed);
+        }
+*/
         bPlayer.setLinearVelocity(vel.x * speed, vel.y * speed);
+
+        System.out.println(bPlayer.getPosition() + " : " + z);
     }
 
     private Body createBody(float x, float y, int width, int height, boolean isStatic, short cBits, short mBits, short gIndex) {

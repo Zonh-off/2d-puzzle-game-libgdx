@@ -7,6 +7,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
+import static com.mygdx.game.utils.Constants.*;
+
 public class TileMapHelper {
     private TiledMap tiledMap;
     private World world;
@@ -14,13 +16,13 @@ public class TileMapHelper {
     public TileMapHelper(World world, TiledMap tiledMap) {
         this.world = world;
         this.tiledMap = tiledMap;
-        parseTiledObjectLayer(tiledMap.getLayers().get("objects").getObjects());
+        parseTiledObjectLayer(tiledMap.getLayers().get("colliders").getObjects());
     }
 
     public void parseTiledObjectLayer(MapObjects mapObjects){
         for(MapObject mapObject : mapObjects){
             if(mapObject instanceof PolygonMapObject){
-                createStaticBody(world, (PolygonMapObject) mapObject);
+                createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_WALL, (short) 0);
             }
         }
     }
@@ -32,6 +34,24 @@ public class TileMapHelper {
         body = world.createBody(bdef);
         Shape shape = createPolygonShape(polygonMapObject);
         body.createFixture(shape, 1000f);
+        shape.dispose();
+    }
+
+    private void createStaticBody(World world, PolygonMapObject polygonMapObject, short cBits, short mBits, short gIndex) {
+        Body body;
+        BodyDef bdef = new BodyDef();
+        bdef.type = BodyDef.BodyType.StaticBody;
+        body = world.createBody(bdef);
+        Shape shape = createPolygonShape(polygonMapObject);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 2f;
+        fixtureDef.filter.categoryBits = cBits; // Is a
+        fixtureDef.filter.maskBits = mBits; // Collide with
+        fixtureDef.filter.groupIndex = gIndex;
+
+        body.createFixture(fixtureDef).getBody();
         shape.dispose();
     }
 

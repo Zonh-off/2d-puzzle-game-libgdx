@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,7 +16,8 @@ public class Assets {
     public static TextureRegion idle_left_sheet;
     public static TextureRegion idle_right_sheet;
 
-    public static Animation idle_down_anim;
+    public static Animation idle_right_anim;
+    public static Animation idle_left_anim;
     public static Animation walk_right_anim;
     public static Animation walk_left_anim;
 
@@ -42,15 +43,18 @@ public class Assets {
 
         idle_down_sheet = new TextureRegion(character, 0, 0, 32, 32);
 
-        idle_down_anim = new Animation(0.5f,
+        idle_right_anim = new Animation(0.25f,
                 new TextureRegion(character,0, 0, 32, 32),
                 new TextureRegion(character, 32, 0, 32, 32));
-        walk_right_anim = new Animation(0.5f,
+        idle_left_anim = new Animation(0.25f,
+                new TextureRegion(character,64, 0, 32, 32),
+                new TextureRegion(character, 96, 0, 32, 32));
+        walk_right_anim = new Animation(0.1f,
                 new TextureRegion(character,0, 64, 32, 32),
                 new TextureRegion(character, 32, 64, 32, 32),
                 new TextureRegion(character, 64, 64, 32, 32),
                 new TextureRegion(character, 96, 64, 32, 32));
-        walk_left_anim = new Animation(0.5f,
+        walk_left_anim = new Animation(0.1f,
                 new TextureRegion(character,0, 96, 32, 32),
                 new TextureRegion(character, 32, 96, 32, 32),
                 new TextureRegion(character, 64, 96, 32, 32),
