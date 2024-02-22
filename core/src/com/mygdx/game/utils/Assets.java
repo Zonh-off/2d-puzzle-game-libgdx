@@ -11,25 +11,13 @@ public class Assets {
 
     // Character
     public static Texture character;
-    public static TextureRegion idle_up_sheet;
     public static TextureRegion idle_down_sheet;
-    public static TextureRegion idle_left_sheet;
-    public static TextureRegion idle_right_sheet;
-
     public static Animation idle_right_anim;
     public static Animation idle_left_anim;
     public static Animation walk_right_anim;
     public static Animation walk_left_anim;
-
-    public static TextureRegion walk_up_sheet;
-    public static TextureRegion walk_down_sheet;
-    public static TextureRegion walk_left_sheet;
-    public static TextureRegion walk_right_sheet;
-    public static TextureRegion walk_up_frames;
-    public static TextureRegion walk_down_frames;
-    public static TextureRegion walk_left_frames;
-    public static TextureRegion walk_right_frames;
-    public static TextureRegion shadow_sheet;
+    public static Animation die_anim;
+    public static Animation shadow_anim;
 
     // Map
     public static TiledMap level0;
@@ -59,7 +47,19 @@ public class Assets {
                 new TextureRegion(character, 32, 96, 32, 32),
                 new TextureRegion(character, 64, 96, 32, 32),
                 new TextureRegion(character, 96, 96, 32, 32));
+        die_anim = new Animation(0.25f,
+                new TextureRegion(character, 0, 224, 32, 32),
+                new TextureRegion(character, 32, 224, 32, 32),
+                new TextureRegion(character, 64, 224, 32, 32),
+                new TextureRegion(character, 96, 224, 32, 32));
+        shadow_anim = new Animation(0.25f,
+                new TextureRegion(character, 192, 0, 32, 32),
+                new TextureRegion(character, 224, 0, 32, 32));
 
-        level0 = new TmxMapLoader().load("maps/map0.tmx");
+        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
+        params.textureMinFilter = Texture.TextureFilter.Nearest;
+        params.textureMagFilter = Texture.TextureFilter.Nearest;
+        params.generateMipMaps = true;
+        level0 = new TmxMapLoader().load("maps/map0.tmx", params);
     }
 }

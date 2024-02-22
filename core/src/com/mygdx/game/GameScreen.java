@@ -1,8 +1,11 @@
 package com.mygdx.game;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,7 +42,7 @@ public class GameScreen implements Screen {
         world = new World(new Vector2(0, 0), false);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-        player = new Player(new Vector2(200, 150), world);
+        player = new Player(new Vector2(200, 150), world, camera);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -59,8 +62,10 @@ public class GameScreen implements Screen {
         ScreenUtils.clear(0.06f, 0.06f, 0.08f, 1);
 
         orthogonalTiledMapRenderer.render();
-        box2DDebugRenderer.render(world, camera.combined.scl(PPM));
+        //box2DDebugRenderer.render(world, camera.combined.scl(PPM));
 
+        player.GetRaycastHandler().updateAndRender();
+        player.GetRaycastHandler().setCombinedMatrix(camera.combined.cpy().scl(PPM));
         batch.begin();
             player.updateAnimation(delta, batch);
         batch.end();

@@ -22,7 +22,7 @@ public class TileMapHelper {
     public void parseTiledObjectLayer(MapObjects mapObjects){
         for(MapObject mapObject : mapObjects){
             if(mapObject instanceof PolygonMapObject){
-                createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_WALL, (short) 0);
+                createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_PLAYER, (short) 0);
             }
         }
     }

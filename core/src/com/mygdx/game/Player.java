@@ -1,7 +1,11 @@
 package com.mygdx.game;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -11,7 +15,6 @@ import com.mygdx.game.utils.Assets;
 import java.util.Objects;
 
 import static com.mygdx.game.utils.Constants.*;
-import static com.mygdx.game.utils.Constants.PPM;
 
 public class Player {
     private World world;
@@ -31,9 +34,22 @@ public class Player {
     private float jumpZ;
     private boolean isJumping;
 
-    public Player(Vector2 startPosition, World world) {
+    private OrthographicCamera camera;
+    private RayHandler rayHandler;
+    private PointLight pointLight;
+
+    public Player(Vector2 startPosition, World world, OrthographicCamera camera) {
         super();
         this.world = world;
+        this.camera = camera;
+
+        rayHandler = new RayHandler(world);
+        pointLight = new PointLight(rayHandler, 12, new Color(1, 1, 1, 0.4f) ,2, 0, 0);
+        pointLight.setSoftnessLength(0f);
+        rayHandler.setBlur(true);
+        rayHandler.setBlurNum(10);
+        rayHandler.setAmbientLight(0.5f);
+        pointLight.attachToBody(bPlayer);
 
         bPlayer = createBody(startPosition.x, startPosition.y, 32, 32, false, BIT_PLAYER, BIT_WALL, (short) 0);
     }
@@ -51,41 +67,53 @@ public class Player {
         if(idleStateTime < 0)
             idleStateTime = 1;
 
+        setBatchTexture(batch, (TextureRegion) Assets.shadow_anim.getKeyFrame(idleStateTime, true), true);
+
         if(vel.x > 0) {
-            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
         }
         if(vel.x < 0){
-            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
         }
         if(vel.y > 0 && lastVel.x > 0 ) {
-            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
         }
         if(vel.y > 0 && lastVel.x < 0 ) {
-            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
         }
         if(vel.y < 0 && lastVel.x > 0 ) {
-            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
         }
         if(vel.y < 0 && lastVel.x < 0 ) {
-            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
         }
         if(lastVel.x > 0 && vel.isZero()) {
-            setBatchTexture(batch, (TextureRegion) Assets.idle_right_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.idle_right_anim.getKeyFrame(idleStateTime, true), false);
         }
         if(lastVel.x < 0 && vel.isZero()) {
-            setBatchTexture(batch, (TextureRegion) Assets.idle_left_anim.getKeyFrame(walkStateTime, true));
+            setBatchTexture(batch, (TextureRegion) Assets.idle_left_anim.getKeyFrame(idleStateTime, true), false);
         }
     }
 
-    private void setBatchTexture(SpriteBatch batch, TextureRegion texture) {
-        batch.draw(
-                texture,
-                GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
-                GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
+    private void setBatchTexture(SpriteBatch batch, TextureRegion texture, boolean isBottomTexture) {
+        if(!isBottomTexture){
+            batch.draw(
+                    texture,
+                    GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
+                    GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
+        } else {
+            batch.draw(
+                    texture,
+                    GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
+                    GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight()));
+        }
     }
-
     public Vector2 GetPosition() {
         return bPlayer.getPosition();
+    }
+
+    public RayHandler GetRaycastHandler() {
+        return rayHandler;
     }
 
     private void handleInput(float deltaTime) {
@@ -137,11 +165,9 @@ public class Player {
             bPlayer.setTransform(bPlayer.getPosition().x,  jumpZ - z,0);
         } else {
             bPlayer.setLinearVelocity(vel.x * speed, vel.y * speed);
-        }
-*/
+        }*/
+        pointLight.setPosition(bPlayer.getPosition());
         bPlayer.setLinearVelocity(vel.x * speed, vel.y * speed);
-
-        System.out.println(bPlayer.getPosition() + " : " + z);
     }
 
     private Body createBody(float x, float y, int width, int height, boolean isStatic, short cBits, short mBits, short gIndex) {

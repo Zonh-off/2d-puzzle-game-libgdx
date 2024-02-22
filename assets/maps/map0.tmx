@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="70">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="87">
  <tileset firstgid="1" source="maptiles.tsx"/>
  <objectgroup id="3" name="colliders">
   <object id="63" x="576" y="128">
@@ -14,7 +14,7 @@
   <object id="67" x="32" y="0">
    <polygon points="0,0 -32,0 -32,480 0,480"/>
   </object>
-  <object id="68" x="32" y="448">
+  <object id="68" x="32" y="448" visible="0">
    <polygon points="0,0 0,32 736,32 736,0"/>
   </object>
   <object id="69" x="32" y="448">
