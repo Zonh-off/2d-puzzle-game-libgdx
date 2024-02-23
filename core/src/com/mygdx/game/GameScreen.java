@@ -42,7 +42,8 @@ public class GameScreen implements Screen {
         world = new World(new Vector2(0, 0), false);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-        player = new Player(new Vector2(200, 150), world, camera);
+        player = new Player(new Vector2(Assets.level0.getProperties().get("width", Integer.class) * 32 / 2,
+                Assets.level0.getProperties().get("height", Integer.class) * 32 / 2), world, camera);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
@@ -57,9 +58,9 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         update(Gdx.graphics.getDeltaTime());
 
-        Gdx.gl.glClearColor(0.06f, 0.06f, 0.08f, 1);
+        Gdx.gl.glClearColor(0.09f, 0.08f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        ScreenUtils.clear(0.06f, 0.06f, 0.08f, 1);
+        ScreenUtils.clear(0.09f, 0.08f, 0.15f, 1);
 
         orthogonalTiledMapRenderer.render();
         //box2DDebugRenderer.render(world, camera.combined.scl(PPM));
@@ -68,6 +69,7 @@ public class GameScreen implements Screen {
         player.GetRaycastHandler().setCombinedMatrix(camera.combined.cpy().scl(PPM));
         batch.begin();
             player.updateAnimation(delta, batch);
+            player.setRainEffect(batch, delta);
         batch.end();
     }
 
@@ -163,10 +165,13 @@ public class GameScreen implements Screen {
         return pBody;
     }
 
+    // main scene camera
     private void handleCamera(float deltaTime) {
         Vector3 position = camera.position;
-        position.x = camera.position.x + (player.GetPosition().x * PPM - camera.position.x) * .2f;
-        position.y = camera.position.y + (player.GetPosition().y * PPM - camera.position.y) * .2f;
+        position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
+        position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;
+//        position.x = camera.position.x + (player.GetPosition().x * PPM - camera.position.x) * .2f;
+//        position.y = camera.position.y + (player.GetPosition().y * PPM - camera.position.y) * .2f;
         camera.position.set(position);
 
         camera.update();

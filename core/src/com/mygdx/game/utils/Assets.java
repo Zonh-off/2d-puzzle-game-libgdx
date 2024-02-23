@@ -3,6 +3,8 @@ package com.mygdx.game.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -19,6 +21,10 @@ public class Assets {
     public static Animation die_anim;
     public static Animation shadow_anim;
 
+    //particles
+    public static TextureAtlas rainAtlas;
+    public static ParticleEffect rainEffect;
+
     // Map
     public static TiledMap level0;
 
@@ -28,6 +34,10 @@ public class Assets {
 
     public static void load() {
         character = loadTeture("AnimationSheet_Character.png");
+
+        //rainAtlas = new TextureAtlas().load(Gdx.files.internal("particles/rain.png"));
+        rainEffect = new ParticleEffect();
+        rainEffect.load(Gdx.files.internal("particles/rain.p"), Gdx.files.internal("particles/"));
 
         idle_down_sheet = new TextureRegion(character, 0, 0, 32, 32);
 

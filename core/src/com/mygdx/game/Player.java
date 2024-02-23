@@ -25,15 +25,6 @@ public class Player {
     private Vector2 lastVel = new Vector2(1, 0);
     private float idleStateTime = 1;
     private float walkStateTime = 4;
-    private float zSpeed = 0;
-    private float jumpSpeed = -.1f;
-    private float gameGravity = .2f;
-    private float z = 0;
-    private float zFloor = 0;
-
-    private float jumpZ;
-    private boolean isJumping;
-
     private OrthographicCamera camera;
     private RayHandler rayHandler;
     private PointLight pointLight;
@@ -48,7 +39,7 @@ public class Player {
         pointLight.setSoftnessLength(0f);
         rayHandler.setBlur(true);
         rayHandler.setBlurNum(10);
-        rayHandler.setAmbientLight(0.5f);
+        rayHandler.setAmbientLight(.8f);
         pointLight.attachToBody(bPlayer);
 
         bPlayer = createBody(startPosition.x, startPosition.y, 32, 32, false, BIT_PLAYER, BIT_WALL, (short) 0);
@@ -95,6 +86,7 @@ public class Player {
         }
     }
 
+    // set texture for player
     private void setBatchTexture(SpriteBatch batch, TextureRegion texture, boolean isBottomTexture) {
         if(!isBottomTexture){
             batch.draw(
@@ -108,6 +100,14 @@ public class Player {
                     GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight()));
         }
     }
+
+    // rain effect
+    public void setRainEffect(SpriteBatch batch, float delta) {
+        Assets.rainEffect.start();
+        Assets.rainEffect.setPosition(GetPosition().x, GetPosition().y + 1080f);
+        Assets.rainEffect.draw(batch, delta);
+    }
+
     public Vector2 GetPosition() {
         return bPlayer.getPosition();
     }
@@ -116,6 +116,7 @@ public class Player {
         return rayHandler;
     }
 
+    // player movement
     private void handleInput(float deltaTime) {
         vel.x = 0;
         vel.y = 0;
@@ -146,30 +147,16 @@ public class Player {
         if(Objects.equals(vel, new Vector2(1, -1)))
             vel = new Vector2(ONE_ON_ROOT_TWO, -ONE_ON_ROOT_TWO);
 
-/*        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && zSpeed == 0){
-            isJumping = true;
-            jumpZ = bPlayer.getPosition().y;
-            zSpeed = jumpSpeed;
-        }
-        if(z != zFloor){
-            zSpeed += gameGravity * deltaTime;
-        }
-        if(z + zSpeed > zFloor){
-            zSpeed = 0;
-            z = zFloor;
-            isJumping = false;
-        }
-        z += zSpeed;
-
-        if(isJumping){
-            bPlayer.setTransform(bPlayer.getPosition().x,  jumpZ - z,0);
-        } else {
-            bPlayer.setLinearVelocity(vel.x * speed, vel.y * speed);
-        }*/
         pointLight.setPosition(bPlayer.getPosition());
         bPlayer.setLinearVelocity(vel.x * speed, vel.y * speed);
     }
 
+    // interacting with objects
+    public void hadnleIntect(){
+
+    }
+
+    // create player body
     private Body createBody(float x, float y, int width, int height, boolean isStatic, short cBits, short mBits, short gIndex) {
         Body pBody;
         BodyDef def = new BodyDef();
@@ -199,46 +186,3 @@ public class Player {
         return pBody;
     }
 }
-
-/*    private void handleInput(float deltaTime) {
-        int horizontalForce = 0;
-        int verticalForce = 0;
-
-        if(Gdx.input.isKeyPressed(Input.Keys.L)){
-            horizontalForce += 1;
-            posX += playerSpeed * deltaTime;
-            characterSheet = new Texture("IdleRight.png");
-            characterFrame = new TextureRegion(characterSheet, 32, 32);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.J)){
-            horizontalForce -= 1;
-            posX -= playerSpeed * deltaTime;
-            characterSheet = new Texture("IdleLeft.png");
-            characterFrame = new TextureRegion(characterSheet, 32, 32);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.I)){
-            verticalForce += 1;
-            posY += playerSpeed * deltaTime;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.K)){
-            verticalForce -= 1;
-            posY -= playerSpeed * deltaTime;
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && zSpeed == 0){
-            zSpeed = jumpSpeed;
-        }
-        if(z != zFloor){
-            zSpeed += gameGravity * deltaTime;
-        }
-        if(z + zSpeed > zFloor){
-            zSpeed = 0;
-            z = zFloor;
-        }
-        z += zSpeed;
-
-        System.out.println(z);
-        //player.setLinearVelocity(horizontalForce * playerSpeed, (verticalForce) * playerSpeed);
-        player.setTransform(posX,posY - z,0);
-        shadow.setTransform(posX, posY + zFloor, 0);
-    }*/
