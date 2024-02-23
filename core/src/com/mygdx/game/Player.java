@@ -20,7 +20,7 @@ public class Player {
     private World world;
     private Body bPlayer;
 
-    private float speed = 5f;
+    private float speed = 2.5f;
     private Vector2 vel = new Vector2(0, 0);
     private Vector2 lastVel = new Vector2(1, 0);
     private float idleStateTime = 1;

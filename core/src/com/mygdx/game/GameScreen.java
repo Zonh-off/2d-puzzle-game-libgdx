@@ -30,6 +30,8 @@ public class GameScreen implements Screen {
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TiledMap map;
     private TileMapHelper tileMapHelper;
+    private Hud hud;
+    private Integer counter = 0;
 
     public GameScreen(Game game) {
         super();
@@ -52,6 +54,8 @@ public class GameScreen implements Screen {
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map);
 
         tileMapHelper = new TileMapHelper(world, map);
+
+        hud = new Hud(camera);
     }
 
     @Override
@@ -62,11 +66,17 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         ScreenUtils.clear(0.09f, 0.08f, 0.15f, 1);
 
+
         orthogonalTiledMapRenderer.render();
         //box2DDebugRenderer.render(world, camera.combined.scl(PPM));
 
         player.GetRaycastHandler().updateAndRender();
         player.GetRaycastHandler().setCombinedMatrix(camera.combined.cpy().scl(PPM));
+
+        hud.getStage().draw();
+        hud.setCounter(Gdx.graphics.getFramesPerSecond());
+        counter++;
+
         batch.begin();
             player.updateAnimation(delta, batch);
             player.setRainEffect(batch, delta);
@@ -106,7 +116,7 @@ public class GameScreen implements Screen {
     }
 
     private void update(float deltaTime) {
-        world.step(1 / 60f, 6, 2);
+        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
         player.update(deltaTime);
         handleCamera(deltaTime);
