@@ -1,0 +1,35 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map0.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "dungeonmaptiles.tsx": {
+            "scaleInDock": 1
+        },
+        "map0.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 370.3333333333333,
+                "y": 288
+            }
+        },
+        "maptiles.tsx": {
+            "scaleInDock": 1.5
+        }
+    },
+    "map.layerDataFormat": null,
+    "openFiles": [
+        "map0.tmx"
+    ],
+    "project": "maps.tiled-project",
+    "recentFiles": [
+        "map0.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
