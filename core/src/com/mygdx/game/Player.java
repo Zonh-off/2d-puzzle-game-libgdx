@@ -102,7 +102,7 @@ public class Player {
     }
 
     // rain effect
-    public void setRainEffect(SpriteBatch batch, float delta) {
+    public void drawRainEffect(SpriteBatch batch, float delta) {
         Assets.rainEffect.start();
         Assets.rainEffect.setPosition(GetPosition().x, GetPosition().y + 1080f);
         Assets.rainEffect.draw(batch, delta);

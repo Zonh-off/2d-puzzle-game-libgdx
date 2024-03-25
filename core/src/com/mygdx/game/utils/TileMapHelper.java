@@ -16,13 +16,22 @@ public class TileMapHelper {
     public TileMapHelper(World world, TiledMap tiledMap) {
         this.world = world;
         this.tiledMap = tiledMap;
-        parseTiledObjectLayer(tiledMap.getLayers().get("colliders").getObjects());
+        parseTiledObjectLayer(tiledMap.getLayers().get("colliders").getObjects(), true);
+        parseTiledObjectLayer(tiledMap.getLayers().get("objectspos").getObjects(), false);
     }
 
-    public void parseTiledObjectLayer(MapObjects mapObjects){
-        for(MapObject mapObject : mapObjects){
-            if(mapObject instanceof PolygonMapObject){
-                createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_PLAYER, (short) 0);
+    public void parseTiledObjectLayer(MapObjects mapObjects, boolean isCollide){
+        if(isCollide) {
+            for(MapObject mapObject : mapObjects){
+                if(mapObject instanceof PolygonMapObject){
+                    createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_PLAYER, (short) 0);
+                }
+            }
+        } else {
+            for(MapObject mapObject : mapObjects){
+                if(mapObject instanceof PolygonMapObject){
+                    createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_WALL, (short) 0);
+                }
             }
         }
     }

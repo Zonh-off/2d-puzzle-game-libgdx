@@ -1,11 +1,9 @@
 package com.mygdx.game;
 
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,6 +30,9 @@ public class GameScreen implements Screen {
     private TileMapHelper tileMapHelper;
     private Hud hud;
     private Integer counter = 0;
+    private boolean isFullscreen = false;
+    private boolean debugMode = false;
+    private MapManager mapManager;
 
     public GameScreen(Game game) {
         super();
@@ -51,9 +52,9 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false);
 
         map = Assets.level0;
-        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map);
 
-        tileMapHelper = new TileMapHelper(world, map);
+        mapManager = new MapManager();
+        mapManager.createLevelMap(world, map);
 
         hud = new Hud(camera);
     }
@@ -66,20 +67,25 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         ScreenUtils.clear(0.09f, 0.08f, 0.15f, 1);
 
+        mapManager.orthogonalTiledMapRenderer().render();
 
-        orthogonalTiledMapRenderer.render();
-        //box2DDebugRenderer.render(world, camera.combined.scl(PPM));
+        if(debugMode) {
+            box2DDebugRenderer.render(world, camera.combined.scl(PPM));
+        }
 
         player.GetRaycastHandler().updateAndRender();
         player.GetRaycastHandler().setCombinedMatrix(camera.combined.cpy().scl(PPM));
+
+        //System.out.println(player.GetPosition().x + " : " + player.GetPosition().y);
 
         hud.getStage().draw();
         hud.setCounter(Gdx.graphics.getFramesPerSecond());
         counter++;
 
         batch.begin();
+            mapManager.drawMirrorObjects(batch);
             player.updateAnimation(delta, batch);
-            player.setRainEffect(batch, delta);
+            player.drawRainEffect(batch, delta);
         batch.end();
     }
 
@@ -110,7 +116,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         batch.dispose();
         world.dispose();
-        orthogonalTiledMapRenderer.dispose();
+        mapManager.orthogonalTiledMapRenderer().dispose();
         box2DDebugRenderer.dispose();
         map.dispose();
     }
@@ -118,10 +124,36 @@ public class GameScreen implements Screen {
     private void update(float deltaTime) {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
+            map = Assets.level0;
+            mapManager.createLevelMap(world, map);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
+            map = Assets.level1;
+            mapManager.createLevelMap(world, map);
+        }
+
         player.update(deltaTime);
         handleCamera(deltaTime);
-        orthogonalTiledMapRenderer.setView(camera);
+        setFullscreenMode();
+
+        mapManager.orthogonalTiledMapRenderer().setView(camera);
         batch.setProjectionMatrix(camera.combined);
+    }
+
+    private void setFullscreenMode() {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+            isFullscreen = !isFullscreen;
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
+            debugMode = !debugMode;
+        }
+
+        if(isFullscreen) {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        } else {
+            Gdx.graphics.setWindowedMode(1280, 720);
+        }
     }
 
     private Body createBox(int x, int y, int width, int height, boolean isStatic) {
@@ -178,12 +210,15 @@ public class GameScreen implements Screen {
     // main scene camera
     private void handleCamera(float deltaTime) {
         Vector3 position = camera.position;
-        position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
-        position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;
-//        position.x = camera.position.x + (player.GetPosition().x * PPM - camera.position.x) * .2f;
-//        position.y = camera.position.y + (player.GetPosition().y * PPM - camera.position.y) * .2f;
-        camera.position.set(position);
+        if(debugMode){
+            position.x = camera.position.x + (player.GetPosition().x * PPM - camera.position.x) * .2f;
+            position.y = camera.position.y + (player.GetPosition().y * PPM - camera.position.y) * .2f;
+        } else {
+            position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
+            position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;
+        }
 
+        camera.position.set(position);
         camera.update();
     }
 }

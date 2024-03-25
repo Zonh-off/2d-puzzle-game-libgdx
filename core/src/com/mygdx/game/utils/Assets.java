@@ -13,6 +13,7 @@ public class Assets {
 
     // Character
     public static Texture character;
+    public static Texture baseTiles;
     public static TextureRegion idle_down_sheet;
     public static Animation idle_right_anim;
     public static Animation idle_left_anim;
@@ -21,12 +22,19 @@ public class Assets {
     public static Animation die_anim;
     public static Animation shadow_anim;
 
+    // Mirrors
+    public static TextureRegion mirror_ne;
+    public static TextureRegion mirror_es;
+    public static TextureRegion mirror_sw;
+    public static TextureRegion mirror_wn;
+
     //particles
     public static TextureAtlas rainAtlas;
     public static ParticleEffect rainEffect;
 
     // Map
     public static TiledMap level0;
+    public static TiledMap level1;
 
     public static Texture loadTeture(String file) {
         return new Texture(Gdx.files.internal(file));
@@ -34,6 +42,7 @@ public class Assets {
 
     public static void load() {
         character = loadTeture("AnimationSheet_Character.png");
+        baseTiles = loadTeture("maps/basetiles.png");
 
         //rainAtlas = new TextureAtlas().load(Gdx.files.internal("particles/rain.png"));
         rainEffect = new ParticleEffect();
@@ -66,10 +75,17 @@ public class Assets {
                 new TextureRegion(character, 192, 0, 32, 32),
                 new TextureRegion(character, 224, 0, 32, 32));
 
+        mirror_ne = new TextureRegion(baseTiles, 32, 96, 32, 32);
+        mirror_es = new TextureRegion(baseTiles, 32, 128 , 32, 32);
+        mirror_sw = new TextureRegion(baseTiles, 32, 160 , 32, 32);
+        mirror_wn = new TextureRegion(baseTiles, 32, 192, 32, 32);
+
+
         TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
         params.textureMinFilter = Texture.TextureFilter.Nearest;
         params.textureMagFilter = Texture.TextureFilter.Nearest;
         params.generateMipMaps = true;
         level0 = new TmxMapLoader().load("maps/map0.tmx", params);
+        level1 = new TmxMapLoader().load("maps/map1.tmx", params);
     }
 }
