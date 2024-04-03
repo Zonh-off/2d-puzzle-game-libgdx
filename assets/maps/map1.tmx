@@ -18,26 +18,6 @@
    <polygon points="0,0 0,32 736,32 736,0"/>
   </object>
  </objectgroup>
- <objectgroup id="6" name="objectspos">
-  <object id="89" x="352" y="224" visible="0">
-   <polygon points="0,0 32,0 32,32 0,32"/>
-  </object>
-  <object id="90" x="352" y="256">
-   <polygon points="0,0 32,0 32,32 0,32"/>
-  </object>
-  <object id="91" x="480" y="224">
-   <polygon points="0,0 32,0 32,32 0,32"/>
-  </object>
-  <object id="92" x="480" y="160">
-   <polygon points="0,0 32,0 32,32 0,32"/>
-  </object>
-  <object id="93" x="288" y="160">
-   <polygon points="0,0 32,0 32,32 0,32"/>
-  </object>
-  <object id="94" x="288" y="288">
-   <polygon points="0,0 32,0 32,32 0,32"/>
-  </object>
- </objectgroup>
  <layer id="4" name="Layer" width="25" height="15">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

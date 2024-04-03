@@ -17,7 +17,6 @@ public class TileMapHelper {
         this.world = world;
         this.tiledMap = tiledMap;
         parseTiledObjectLayer(tiledMap.getLayers().get("colliders").getObjects(), true);
-        parseTiledObjectLayer(tiledMap.getLayers().get("objectspos").getObjects(), false);
     }
 
     public void parseTiledObjectLayer(MapObjects mapObjects, boolean isCollide){

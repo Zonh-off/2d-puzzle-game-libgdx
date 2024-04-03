@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.utils.Assets;
 
 import java.awt.*;
 
@@ -15,8 +16,8 @@ public class DesktopLauncher {
 //		config.setForegroundFPS(60);
 		config.useVsync(false);
 		config.setTitle("My GDX Game");
-		config.setWindowedMode(1920, 1080);
+		config.setWindowedMode(1280, 720);
 		//config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
-		new Lwjgl3Application(new MyGdxGame(), config);
+		new Lwjgl3Application(new Application(), config);
 	}
 }

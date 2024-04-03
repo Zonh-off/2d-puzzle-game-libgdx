@@ -29,20 +29,19 @@ public class Assets {
     public static TextureRegion mirror_wn;
 
     //particles
-    public static TextureAtlas rainAtlas;
     public static ParticleEffect rainEffect;
 
     // Map
     public static TiledMap level0;
     public static TiledMap level1;
 
-    public static Texture loadTeture(String file) {
+    public static Texture loadTexture(String file) {
         return new Texture(Gdx.files.internal(file));
     }
 
     public static void load() {
-        character = loadTeture("AnimationSheet_Character.png");
-        baseTiles = loadTeture("maps/basetiles.png");
+        character = loadTexture("AnimationSheet_Character.png");
+        baseTiles = loadTexture("maps/basetiles.png");
 
         //rainAtlas = new TextureAtlas().load(Gdx.files.internal("particles/rain.png"));
         rainEffect = new ParticleEffect();
