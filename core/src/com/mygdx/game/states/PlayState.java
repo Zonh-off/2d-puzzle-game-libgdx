@@ -4,18 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Hud;
-import com.mygdx.game.MapManager;
+import com.mygdx.game.manager.MapManager;
 import com.mygdx.game.Player;
 import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
-import com.mygdx.game.utils.TileMapHelper;
 
 import static com.mygdx.game.utils.Constants.PPM;
 

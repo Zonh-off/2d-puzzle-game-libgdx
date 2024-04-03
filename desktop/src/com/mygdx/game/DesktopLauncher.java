@@ -17,6 +17,7 @@ public class DesktopLauncher {
 		config.useVsync(false);
 		config.setTitle("My GDX Game");
 		config.setWindowedMode(1280, 720);
+		config.disableAudio(true);
 		//config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 		new Lwjgl3Application(new Application(), config);
 	}

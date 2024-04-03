@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
-import sun.tools.jstat.Scale;
 
 import static com.mygdx.game.utils.Constants.SCALE;
 

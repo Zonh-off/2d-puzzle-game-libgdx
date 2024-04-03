@@ -4,13 +4,10 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
-import sun.tools.jstat.Scale;
 
 import static com.mygdx.game.utils.Constants.SCALE;
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
 
 import java.util.Objects;
@@ -17,6 +18,8 @@ import java.util.Objects;
 import static com.mygdx.game.utils.Constants.*;
 
 public class Player {
+    public static Player Instance;
+
     private World world;
     private Body bPlayer;
 
@@ -34,6 +37,8 @@ public class Player {
         this.world = world;
         this.camera = camera;
 
+        Instance = this;
+
         rayHandler = new RayHandler(world);
         pointLight = new PointLight(rayHandler, 12, new Color(1, 1, 1, 0.4f) ,2, 0, 0);
         pointLight.setSoftnessLength(0f);
@@ -47,6 +52,7 @@ public class Player {
 
     public void update(float deltaTime) {
         handleInput(deltaTime);
+        handleInteract();
     }
 
     public void updateAnimation(float delta, SpriteBatch batch) {
@@ -115,6 +121,9 @@ public class Player {
     public RayHandler GetRaycastHandler() {
         return rayHandler;
     }
+    public void setPosition(float posX, float posY) {
+        bPlayer.setTransform(posX, posY, 0);
+    }
 
     // player movement
     private void handleInput(float deltaTime) {
@@ -152,8 +161,10 @@ public class Player {
     }
 
     // interacting with objects
-    public void hadnleIntect(){
-
+    public void handleInteract() {
+        if(Gdx.input.isKeyPressed(Input.Keys.F)) {
+            pointLight = new PointLight(rayHandler, 12, new Color(1, 1, 1, 0.7f) ,2, 0, 0);
+        }
     }
 
     // create player body

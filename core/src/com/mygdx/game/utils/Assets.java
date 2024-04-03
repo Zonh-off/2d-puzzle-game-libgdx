@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Assets {
 
@@ -35,13 +36,19 @@ public class Assets {
     public static TiledMap level0;
     public static TiledMap level1;
 
+    public static Skin menuSkin;
+
     public static Texture loadTexture(String file) {
         return new Texture(Gdx.files.internal(file));
+    }
+    public static Skin loadSkin(String file) {
+        return new Skin(Gdx.files.internal(file));
     }
 
     public static void load() {
         character = loadTexture("AnimationSheet_Character.png");
         baseTiles = loadTexture("maps/basetiles.png");
+        menuSkin = loadSkin("skin/skin.json");
 
         //rainAtlas = new TextureAtlas().load(Gdx.files.internal("particles/rain.png"));
         rainEffect = new ParticleEffect();

@@ -1,41 +1,55 @@
 package com.mygdx.game.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
 
 
 public class MenuState extends GameState {
-    private Texture btn;
+    private TextButton startBtn;
+    private TextButton exitBtn;
     private Stage stage;
-    Image btnImage;
     public MenuState(GameStateManager gsm) {
         super(gsm);
         stage = new Stage(new ScreenViewport());
 
-        btn = Assets.loadTexture("button.png");
-        btnImage = new Image(btn);
-        btnImage.setScale(5f);
+        startBtn = new TextButton("Start", Assets.menuSkin, "default");
+        startBtn.setSize(200, 65);
+        startBtn.setPosition(Gdx.graphics.getWidth() / 2 - startBtn.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - startBtn.getHeight() / 2);
+
+        exitBtn = new TextButton("Exit", Assets.menuSkin, "default");
+        exitBtn.setSize(200, 65);
+        exitBtn.setPosition(Gdx.graphics.getWidth() / 2 - startBtn.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - startBtn.getHeight() / 2 - 100);
 
         Table table = new Table();
         table.setFillParent(true);
-        stage.addActor(table);
+        stage.addActor(startBtn);
+        stage.addActor(exitBtn);
 
-        table.add(btnImage).fillX().uniformX();
+//        table.add().fillX().uniformX();
         table.row().pad(0, 0, 0, 0);
 
-        btnImage.addListener(new ChangeListener() {
+        startBtn.addListener(new InputListener() {
             @Override
-            public void changed(ChangeEvent changeEvent, Actor actor) {
-                System.out.println("Clicked");
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 gsm.setState(GameStateManager.State.PLAY);
+                return true;
             }
         });
     }

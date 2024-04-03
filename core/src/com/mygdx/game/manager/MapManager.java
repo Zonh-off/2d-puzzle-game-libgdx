@@ -1,5 +1,6 @@
-package com.mygdx.game;
+package com.mygdx.game.manager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -7,6 +8,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.MirrorBox;
+import com.mygdx.game.Player;
 import com.mygdx.game.utils.TileMapHelper;
 
 import java.awt.*;
@@ -18,9 +21,10 @@ public class MapManager {
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TiledMap map;
     private TileMapHelper tileMapHelper;
-
+    private World world;
 
     public void createLevelMap(World world, TiledMap level) {
+        this.world = world;
         map = level;
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map);
         tileMapHelper = new TileMapHelper(world, map);
@@ -32,6 +36,7 @@ public class MapManager {
                 if(objects.getCell(x, y) == null) continue;
                 System.out.println(objects.getCell(x, y));
                 addMirrorObjects(x + 0.5f, y + 0.5f);
+                Player.Instance.setPosition(map.getProperties().get("width", Integer.class) / 2, map.getProperties().get("height", Integer.class) / 2);
 //                objects.setCell(x, y, null);
             }
         }
@@ -43,11 +48,18 @@ public class MapManager {
 
     public void addMirrorObjects(float posX, float posY) {
         Random rand = new Random();
-        MirrorBox newMirrorObject = new MirrorBox(posX, posY, rand.nextInt(0, 3));
+        MirrorBox newMirrorObject = new MirrorBox(world, posX, posY, rand.nextInt(0, 3));
         mirrorBoxesList.add(newMirrorObject);
     }
 
     public void removeMirrorObjects() {
+        try {
+            for(MirrorBox v : mirrorBoxesList) {
+                world.destroyBody(v.getBody());
+            }
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
         mirrorBoxesList.clear();
     }
 
