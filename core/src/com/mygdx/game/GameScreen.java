@@ -17,8 +17,8 @@ import com.mygdx.game.manager.MapManager;
 import com.mygdx.game.utils.Assets;
 import com.mygdx.game.utils.TileMapHelper;
 
-import static com.mygdx.game.utils.Constants.*;
 import static com.mygdx.game.utils.Constants.PPM;
+import static com.mygdx.game.utils.Constants.SCALE;
 
 public class GameScreen implements Screen {
     private OrthographicCamera camera;
@@ -70,7 +70,7 @@ public class GameScreen implements Screen {
 
         mapManager.orthogonalTiledMapRenderer().render();
 
-        if(debugMode) {
+        if (debugMode) {
             box2DDebugRenderer.render(world, camera.combined.scl(PPM));
         }
 
@@ -84,9 +84,9 @@ public class GameScreen implements Screen {
         counter++;
 
         batch.begin();
-            mapManager.drawMirrorObjects(batch);
-            player.updateAnimation(delta, batch);
-            player.drawRainEffect(batch, delta);
+        mapManager.drawMirrorObjects(batch);
+        player.updateAnimation(delta, batch);
+        player.drawRainEffect(batch, delta);
         batch.end();
     }
 
@@ -125,11 +125,11 @@ public class GameScreen implements Screen {
     private void update(float deltaTime) {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
             map = Assets.level0;
             mapManager.createLevelMap(world, map);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
             map = Assets.level1;
             mapManager.createLevelMap(world, map);
         }
@@ -143,14 +143,14 @@ public class GameScreen implements Screen {
     }
 
     private void setFullscreenMode() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
             isFullscreen = !isFullscreen;
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
             debugMode = !debugMode;
         }
 
-        if(isFullscreen) {
+        if (isFullscreen) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         } else {
             Gdx.graphics.setWindowedMode(1280, 720);
@@ -161,7 +161,7 @@ public class GameScreen implements Screen {
         Body pBody;
         BodyDef def = new BodyDef();
 
-        if(isStatic)
+        if (isStatic)
             def.type = BodyDef.BodyType.StaticBody;
         else
             def.type = BodyDef.BodyType.DynamicBody;
@@ -183,7 +183,7 @@ public class GameScreen implements Screen {
         Body pBody;
         BodyDef def = new BodyDef();
 
-        if(isStatic)
+        if (isStatic)
             def.type = BodyDef.BodyType.StaticBody;
         else
             def.type = BodyDef.BodyType.DynamicBody;
@@ -211,9 +211,9 @@ public class GameScreen implements Screen {
     // main scene camera
     private void handleCamera(float deltaTime) {
         Vector3 position = camera.position;
-        if(debugMode){
-            position.x = camera.position.x + (player.GetPosition().x * PPM - camera.position.x) * .2f;
-            position.y = camera.position.y + (player.GetPosition().y * PPM - camera.position.y) * .2f;
+        if (debugMode) {
+            position.x = camera.position.x + (player.getPosition().x * PPM - camera.position.x) * .2f;
+            position.y = camera.position.y + (player.getPosition().y * PPM - camera.position.y) * .2f;
         } else {
             position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
             position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;

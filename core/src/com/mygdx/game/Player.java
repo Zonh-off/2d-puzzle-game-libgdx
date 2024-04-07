@@ -10,14 +10,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
 
 import java.util.Objects;
 
 import static com.mygdx.game.utils.Constants.*;
 
-public class Player {
+public class Player implements ContactListener {
     public static Player Instance;
 
     private World world;
@@ -31,6 +30,7 @@ public class Player {
     private OrthographicCamera camera;
     private RayHandler rayHandler;
     private PointLight pointLight;
+    private MirrorBox mirrorBox = null;
 
     public Player(Vector2 startPosition, World world, OrthographicCamera camera) {
         super();
@@ -40,7 +40,7 @@ public class Player {
         Instance = this;
 
         rayHandler = new RayHandler(world);
-        pointLight = new PointLight(rayHandler, 12, new Color(1, 1, 1, 0.4f) ,2, 0, 0);
+        pointLight = new PointLight(rayHandler, 12, new Color(1, 1, 1, 0.4f), 2, 0, 0);
         pointLight.setSoftnessLength(0f);
         rayHandler.setBlur(true);
         rayHandler.setBlurNum(10);
@@ -57,70 +57,71 @@ public class Player {
 
     public void updateAnimation(float delta, SpriteBatch batch) {
         walkStateTime -= delta;
-        if(walkStateTime < 0)
+        if (walkStateTime < 0)
             walkStateTime = 4;
 
         idleStateTime -= delta;
-        if(idleStateTime < 0)
+        if (idleStateTime < 0)
             idleStateTime = 1;
 
         setBatchTexture(batch, (TextureRegion) Assets.shadow_anim.getKeyFrame(idleStateTime, true), true);
 
-        if(vel.x > 0) {
+        if (vel.x > 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
         }
-        if(vel.x < 0){
+        if (vel.x < 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
         }
-        if(vel.y > 0 && lastVel.x > 0 ) {
+        if (vel.y > 0 && lastVel.x > 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
         }
-        if(vel.y > 0 && lastVel.x < 0 ) {
+        if (vel.y > 0 && lastVel.x < 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
         }
-        if(vel.y < 0 && lastVel.x > 0 ) {
+        if (vel.y < 0 && lastVel.x > 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
         }
-        if(vel.y < 0 && lastVel.x < 0 ) {
+        if (vel.y < 0 && lastVel.x < 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
         }
-        if(lastVel.x > 0 && vel.isZero()) {
+        if (lastVel.x > 0 && vel.isZero()) {
             setBatchTexture(batch, (TextureRegion) Assets.idle_right_anim.getKeyFrame(idleStateTime, true), false);
         }
-        if(lastVel.x < 0 && vel.isZero()) {
+        if (lastVel.x < 0 && vel.isZero()) {
             setBatchTexture(batch, (TextureRegion) Assets.idle_left_anim.getKeyFrame(idleStateTime, true), false);
         }
     }
 
     // set texture for player
     private void setBatchTexture(SpriteBatch batch, TextureRegion texture, boolean isBottomTexture) {
-        if(!isBottomTexture){
+        if (!isBottomTexture) {
             batch.draw(
                     texture,
-                    GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
-                    GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
+                    getPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
+                    getPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
         } else {
             batch.draw(
                     texture,
-                    GetPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
-                    GetPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight()));
+                    getPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
+                    getPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight()));
         }
     }
 
     // rain effect
     public void drawRainEffect(SpriteBatch batch, float delta) {
         Assets.rainEffect.start();
-        Assets.rainEffect.setPosition(GetPosition().x, GetPosition().y + 1080f);
+        Assets.rainEffect.setPosition(getPosition().x, getPosition().y + 1080f);
         Assets.rainEffect.draw(batch, delta);
     }
 
-    public Vector2 GetPosition() {
+    public Vector2 getPosition() {
         return bPlayer.getPosition();
     }
 
     public RayHandler GetRaycastHandler() {
         return rayHandler;
     }
+
     public void setPosition(float posX, float posY) {
         bPlayer.setTransform(posX, posY, 0);
     }
@@ -130,30 +131,30 @@ public class Player {
         vel.x = 0;
         vel.y = 0;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             vel.x += 1;
             lastVel.x = 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.A)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             vel.x -= 1;
             lastVel.x = -1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             vel.y += 1;
             lastVel.y = 1;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             vel.y -= 1;
             lastVel.y = -1;
         }
 
-        if(Objects.equals(vel, new Vector2(1, 1)))
+        if (Objects.equals(vel, new Vector2(1, 1)))
             vel = new Vector2(ONE_ON_ROOT_TWO, ONE_ON_ROOT_TWO);
-        if(Objects.equals(vel, new Vector2(-1, -1)))
+        if (Objects.equals(vel, new Vector2(-1, -1)))
             vel = new Vector2(-ONE_ON_ROOT_TWO, -ONE_ON_ROOT_TWO);
-        if(Objects.equals(vel, new Vector2(-1, 1)))
+        if (Objects.equals(vel, new Vector2(-1, 1)))
             vel = new Vector2(-ONE_ON_ROOT_TWO, ONE_ON_ROOT_TWO);
-        if(Objects.equals(vel, new Vector2(1, -1)))
+        if (Objects.equals(vel, new Vector2(1, -1)))
             vel = new Vector2(ONE_ON_ROOT_TWO, -ONE_ON_ROOT_TWO);
 
         pointLight.setPosition(bPlayer.getPosition());
@@ -162,8 +163,9 @@ public class Player {
 
     // interacting with objects
     public void handleInteract() {
-        if(Gdx.input.isKeyPressed(Input.Keys.F)) {
-            pointLight = new PointLight(rayHandler, 12, new Color(1, 1, 1, 0.7f) ,2, 0, 0);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F) && mirrorBox != null) {
+            mirrorBox.setState(Math.max(0, Math.min(4, mirrorBox.getRotation_id() + 1)));
+            System.out.println("State: " + mirrorBox.getRotation_id());
         }
     }
 
@@ -172,7 +174,7 @@ public class Player {
         Body pBody;
         BodyDef def = new BodyDef();
 
-        if(isStatic)
+        if (isStatic)
             def.type = BodyDef.BodyType.StaticBody;
         else
             def.type = BodyDef.BodyType.DynamicBody;
@@ -181,8 +183,11 @@ public class Player {
         def.fixedRotation = true;
         pBody = world.createBody(def);
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
+//        PolygonShape shape = new PolygonShape();
+//        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
+
+        CircleShape shape = new CircleShape();
+        shape.setRadius(0.6f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -195,5 +200,30 @@ public class Player {
         shape.dispose();
 
         return pBody;
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Fixture fA = contact.getFixtureA();
+        Fixture fB = contact.getFixtureB();
+        if (fB.getBody().getUserData() instanceof MirrorBox) {
+            mirrorBox = (MirrorBox) fB.getBody().getUserData();
+            System.out.println("Type: " + mirrorBox);
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        mirrorBox = null;
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold manifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse contactImpulse) {
+
     }
 }

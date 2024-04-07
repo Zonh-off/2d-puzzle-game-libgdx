@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -29,7 +28,10 @@ public class Assets {
     public static TextureRegion mirror_sw;
     public static TextureRegion mirror_wn;
 
-    //particles
+    // Projectile
+    public static TextureRegion projectile;
+
+    // Particles
     public static ParticleEffect rainEffect;
 
     // Map
@@ -41,6 +43,7 @@ public class Assets {
     public static Texture loadTexture(String file) {
         return new Texture(Gdx.files.internal(file));
     }
+
     public static Skin loadSkin(String file) {
         return new Skin(Gdx.files.internal(file));
     }
@@ -56,19 +59,21 @@ public class Assets {
 
         idle_down_sheet = new TextureRegion(character, 0, 0, 32, 32);
 
+        projectile = new TextureRegion(baseTiles, 96, 96, 32, 32);
+
         idle_right_anim = new Animation(0.25f,
-                new TextureRegion(character,0, 0, 32, 32),
+                new TextureRegion(character, 0, 0, 32, 32),
                 new TextureRegion(character, 32, 0, 32, 32));
         idle_left_anim = new Animation(0.25f,
-                new TextureRegion(character,64, 0, 32, 32),
+                new TextureRegion(character, 64, 0, 32, 32),
                 new TextureRegion(character, 96, 0, 32, 32));
         walk_right_anim = new Animation(0.1f,
-                new TextureRegion(character,0, 64, 32, 32),
+                new TextureRegion(character, 0, 64, 32, 32),
                 new TextureRegion(character, 32, 64, 32, 32),
                 new TextureRegion(character, 64, 64, 32, 32),
                 new TextureRegion(character, 96, 64, 32, 32));
         walk_left_anim = new Animation(0.1f,
-                new TextureRegion(character,0, 96, 32, 32),
+                new TextureRegion(character, 0, 96, 32, 32),
                 new TextureRegion(character, 32, 96, 32, 32),
                 new TextureRegion(character, 64, 96, 32, 32),
                 new TextureRegion(character, 96, 96, 32, 32));
@@ -82,8 +87,8 @@ public class Assets {
                 new TextureRegion(character, 224, 0, 32, 32));
 
         mirror_ne = new TextureRegion(baseTiles, 32, 96, 32, 32);
-        mirror_es = new TextureRegion(baseTiles, 32, 128 , 32, 32);
-        mirror_sw = new TextureRegion(baseTiles, 32, 160 , 32, 32);
+        mirror_es = new TextureRegion(baseTiles, 32, 128, 32, 32);
+        mirror_sw = new TextureRegion(baseTiles, 32, 160, 32, 32);
         mirror_wn = new TextureRegion(baseTiles, 32, 192, 32, 32);
 
 

@@ -10,9 +10,10 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Hud;
-import com.mygdx.game.manager.MapManager;
 import com.mygdx.game.Player;
+import com.mygdx.game.Projectile;
 import com.mygdx.game.manager.GameStateManager;
+import com.mygdx.game.manager.MapManager;
 import com.mygdx.game.utils.Assets;
 
 import static com.mygdx.game.utils.Constants.PPM;
@@ -22,6 +23,7 @@ public class PlayState extends GameState {
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
     private Player player;
+    private Projectile projectile = null;
     private TiledMap map;
     private Hud hud;
     private Integer counter = 0;
@@ -37,6 +39,7 @@ public class PlayState extends GameState {
         player = new Player(new Vector2(Assets.level0.getProperties().get("width", Integer.class) * 32 / 2,
                 Assets.level0.getProperties().get("height", Integer.class) * 32 / 2), world, camera);
 
+        world.setContactListener(player);
         map = Assets.level0;
 
         mapManager = new MapManager();
@@ -49,15 +52,17 @@ public class PlayState extends GameState {
     public void update(float delta) {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
             map = Assets.level0;
             mapManager.createLevelMap(world, map);
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
             map = Assets.level1;
             mapManager.createLevelMap(world, map);
         }
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.G) && projectile == null) {
+            projectile = new Projectile(world, player.getPosition().x * 32, player.getPosition().y * 32);
+        }
         player.update(delta);
         handleCamera(delta);
         setFullscreenMode();
@@ -75,7 +80,7 @@ public class PlayState extends GameState {
 
         mapManager.orthogonalTiledMapRenderer().render();
 
-        if(debugMode) {
+        if (debugMode) {
             box2DDebugRenderer.render(world, camera.combined.scl(PPM));
         }
 
@@ -89,9 +94,11 @@ public class PlayState extends GameState {
         counter++;
 
         batch.begin();
-            mapManager.drawMirrorObjects(batch);
-            player.updateAnimation(delta, batch);
-            player.drawRainEffect(batch, delta);
+        mapManager.drawMirrorObjects(batch);
+        player.updateAnimation(delta, batch);
+        player.drawRainEffect(batch, delta);
+        if (projectile != null)
+            projectile.updateAnimation(batch, delta);
         batch.end();
     }
 
@@ -106,9 +113,9 @@ public class PlayState extends GameState {
 
     private void handleCamera(float delta) {
         Vector3 position = camera.position;
-        if(debugMode){
-            position.x = camera.position.x + (player.GetPosition().x * PPM - camera.position.x) * .2f;
-            position.y = camera.position.y + (player.GetPosition().y * PPM - camera.position.y) * .2f;
+        if (debugMode) {
+            position.x = camera.position.x + (player.getPosition().x * PPM - camera.position.x) * .2f;
+            position.y = camera.position.y + (player.getPosition().y * PPM - camera.position.y) * .2f;
         } else {
             position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
             position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;
@@ -119,14 +126,14 @@ public class PlayState extends GameState {
     }
 
     private void setFullscreenMode() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
             isFullscreen = !isFullscreen;
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
             debugMode = !debugMode;
         }
 
-        if(isFullscreen) {
+        if (isFullscreen) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         } else {
             Gdx.graphics.setWindowedMode(1280, 720);

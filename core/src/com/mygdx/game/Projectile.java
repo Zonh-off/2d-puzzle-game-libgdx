@@ -7,60 +7,33 @@ import com.mygdx.game.utils.Assets;
 
 import static com.mygdx.game.utils.Constants.*;
 
-public class MirrorBox {
+public class Projectile {
     private float posX = 0;
     private float posY = 0;
     private TextureRegion texture;
     private World world;
     private Body body;
-    private int dir = 0;
 
-    public MirrorBox(World world, float posX, float posY, int given_dir) {
-        this.world = world;
+    public Projectile(World world, float posX, float posY) {
         this.posX = posX;
         this.posY = posY;
-        this.dir = given_dir;
-        texture = Assets.mirror_ne;
-        body = createBody(posX * PPM, posY * PPM, 48, 48, true, BIT_WALL, BIT_PLAYER, (short) 0);
-        setState(dir);
+        this.world = world;
+        body = createBody(posX, posY, 32, 32, false, BIT_PLAYER, BIT_WALL, (short) 0);
     }
 
-    public void setState(int given_dir) {
-        if (given_dir > 3) {
-            dir = 0;
-        } else {
-            dir = given_dir;
-        }
-        switch (dir) {
-            case 0:
-                texture = Assets.mirror_ne;
-                break;
-            case 1:
-                texture = Assets.mirror_es;
-                break;
-            case 2:
-                texture = Assets.mirror_sw;
-                break;
-            case 3:
-                texture = Assets.mirror_wn;
-                break;
-        }
+    public void update(float deltaTime) {
+
     }
 
-    public int getRotation_id() {
-        return dir;
+    public void updateAnimation(SpriteBatch batch, float delta) {
+        setBatchTexture(batch, Assets.projectile);
     }
 
-    public Body getBody() {
-        return body;
-    }
-
-    public void setBatchTexture(SpriteBatch batch) {
+    private void setBatchTexture(SpriteBatch batch, TextureRegion texture) {
         batch.draw(
                 texture,
-                posX * PPM - ((float) Assets.mirror_ne.getRegionWidth() / 2),
-                posY * PPM - ((float) Assets.mirror_ne.getRegionHeight() / 2)
-        );
+                body.getPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
+                body.getPosition().y * PPM - ((float) Assets.idle_down_sheet.getRegionHeight() / 2));
     }
 
     private Body createBody(float x, float y, int width, int height, boolean isStatic, short cBits, short mBits, short gIndex) {
@@ -73,23 +46,22 @@ public class MirrorBox {
             def.type = BodyDef.BodyType.DynamicBody;
 
         def.position.set(x / PPM, y / PPM);
-        def.fixedRotation = false;
+        def.fixedRotation = true;
         pBody = world.createBody(def);
 
 //        PolygonShape shape = new PolygonShape();
 //        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(0.4f);
+        shape.setRadius(0.2f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 2f;
-        fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = cBits; // Is a
         fixtureDef.filter.maskBits = mBits; // Collide with
         fixtureDef.filter.groupIndex = gIndex;
-        pBody.setUserData(this);
+
         pBody.createFixture(fixtureDef).getBody();
         shape.dispose();
 
