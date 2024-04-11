@@ -30,6 +30,7 @@ public class Assets {
 
     // Projectile
     public static TextureRegion projectile;
+    public static TextureRegion projectileSpawner;
 
     // Particles
     public static ParticleEffect rainEffect;
@@ -60,6 +61,7 @@ public class Assets {
         idle_down_sheet = new TextureRegion(character, 0, 0, 32, 32);
 
         projectile = new TextureRegion(baseTiles, 96, 96, 32, 32);
+        projectileSpawner = new TextureRegion(baseTiles, 96, 160, 32, 32);
 
         idle_right_anim = new Animation(0.25f,
                 new TextureRegion(character, 0, 0, 32, 32),

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.objects.IInteractable;
 import com.mygdx.game.utils.Assets;
 
 import java.util.Objects;
@@ -27,15 +28,13 @@ public class Player implements ContactListener {
     private Vector2 lastVel = new Vector2(1, 0);
     private float idleStateTime = 1;
     private float walkStateTime = 4;
-    private OrthographicCamera camera;
     private RayHandler rayHandler;
     private PointLight pointLight;
-    private MirrorBox mirrorBox = null;
+    private IInteractable interactableObject = null;
 
-    public Player(Vector2 startPosition, World world, OrthographicCamera camera) {
+    public Player(Vector2 startPosition, World world) {
         super();
         this.world = world;
-        this.camera = camera;
 
         Instance = this;
 
@@ -163,9 +162,8 @@ public class Player implements ContactListener {
 
     // interacting with objects
     public void handleInteract() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F) && mirrorBox != null) {
-            mirrorBox.setState(Math.max(0, Math.min(4, mirrorBox.getRotation_id() + 1)));
-            System.out.println("State: " + mirrorBox.getRotation_id());
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F) && interactableObject != null) {
+            interactableObject.Interact();
         }
     }
 
@@ -206,15 +204,15 @@ public class Player implements ContactListener {
     public void beginContact(Contact contact) {
         Fixture fA = contact.getFixtureA();
         Fixture fB = contact.getFixtureB();
-        if (fB.getBody().getUserData() instanceof MirrorBox) {
-            mirrorBox = (MirrorBox) fB.getBody().getUserData();
-            System.out.println("Type: " + mirrorBox);
+        if (fB.getBody().getUserData() instanceof IInteractable) {
+            interactableObject = (IInteractable) fB.getBody().getUserData();
+            System.out.println("Type: " + interactableObject);
         }
     }
 
     @Override
     public void endContact(Contact contact) {
-        mirrorBox = null;
+        interactableObject = null;
     }
 
     @Override

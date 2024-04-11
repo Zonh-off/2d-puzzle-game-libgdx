@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.manager.CameraManager;
 import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
 
@@ -23,7 +24,7 @@ public class Application extends ApplicationAdapter {
 
     public static Engine ashley;
 
-    private OrthographicCamera camera;
+    private CameraManager camera;
     private SpriteBatch batch;
 
     private GameStateManager gsm;
@@ -36,11 +37,11 @@ public class Application extends ApplicationAdapter {
 
         ashley = new Engine();
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, w / SCALE, h / SCALE);
+        camera = new CameraManager();
+        camera.getCamera().setToOrtho(false, w / SCALE, h / SCALE);
 
         batch = new SpriteBatch();
-        batch.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.getCamera().combined);
 
         gsm = new GameStateManager(this);
     }
@@ -67,9 +68,6 @@ public class Application extends ApplicationAdapter {
         batch.dispose();
     }
 
-    public OrthographicCamera getCamera() {
-        return camera;
-    }
     public SpriteBatch getBatch() {
         return batch;
     }

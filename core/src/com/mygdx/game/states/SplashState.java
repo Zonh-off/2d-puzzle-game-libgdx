@@ -3,26 +3,39 @@ package com.mygdx.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.manager.CameraManager;
 import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
 
-import static com.mygdx.game.utils.Constants.SCALE;
-
 public class SplashState extends GameState {
+    private Stage stage;
+    private Image splashLogo;
 
     float acc = 0f;
     TextureRegion tex;
 
     public SplashState(GameStateManager gsm) {
         super(gsm);
+        stage = new Stage(new ScreenViewport());
         tex = Assets.mirror_es;
+        splashLogo = new Image(tex);
+        splashLogo.setSize(128, 128);
+        splashLogo.setPosition(Gdx.graphics.getWidth() / 2 - splashLogo.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - splashLogo.getHeight() / 2);
+        stage.addActor(splashLogo);
     }
 
     @Override
     public void update(float delta) {
         acc += delta;
         if(acc >= 3) {
-            gsm.setState(GameStateManager.State.MENU);
+            splashLogo.setPosition(Gdx.graphics.getWidth() / 2 - splashLogo.getWidth() / 2,
+                    Gdx.graphics.getHeight() / 2 - splashLogo.getHeight() / 2 + 200);
+            if(acc >= 4)
+                gsm.setState(GameStateManager.State.MENU);
         }
     }
 
@@ -32,15 +45,18 @@ public class SplashState extends GameState {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(camera.combined);
-        camera.update();
+
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.act(delta);
+        stage.draw();
 
         batch.begin();
-        batch.draw(tex, Gdx.graphics.getWidth() / (SCALE * 2) - tex.getRegionHeight() / 2, Gdx.graphics.getHeight() / (SCALE * 2)  - tex.getRegionWidth() / 2);
+
         batch.end();
     }
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

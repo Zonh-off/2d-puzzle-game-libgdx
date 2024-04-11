@@ -3,13 +3,15 @@ package com.mygdx.game.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mygdx.game.Hud;
+import com.mygdx.game.manager.CameraManager;
+import com.mygdx.game.ui.Hud;
 import com.mygdx.game.Player;
 import com.mygdx.game.Projectile;
 import com.mygdx.game.manager.GameStateManager;
@@ -30,6 +32,7 @@ public class PlayState extends GameState {
     private boolean isFullscreen = false;
     private boolean debugMode = false;
     private MapManager mapManager;
+    private OrthographicCamera camera;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -37,7 +40,9 @@ public class PlayState extends GameState {
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         player = new Player(new Vector2(Assets.level0.getProperties().get("width", Integer.class) * 32 / 2,
-                Assets.level0.getProperties().get("height", Integer.class) * 32 / 2), world, camera);
+                Assets.level0.getProperties().get("height", Integer.class) * 32 / 2), world);
+
+        camera = CameraManager.Instance.getCamera();
 
         world.setContactListener(player);
         map = Assets.level0;
@@ -65,6 +70,8 @@ public class PlayState extends GameState {
         }
         player.update(delta);
         handleCamera(delta);
+//        System.out.println(camera.getCamera().position + " : " + player.getPosition());
+
         setFullscreenMode();
     }
 
@@ -74,11 +81,10 @@ public class PlayState extends GameState {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         ScreenUtils.clear(0.09f, 0.08f, 0.15f, 1);
 
-
         mapManager.orthogonalTiledMapRenderer().setView(camera);
+        mapManager.orthogonalTiledMapRenderer().render();
         batch.setProjectionMatrix(camera.combined);
 
-        mapManager.orthogonalTiledMapRenderer().render();
 
         if (debugMode) {
             box2DDebugRenderer.render(world, camera.combined.scl(PPM));
@@ -94,7 +100,7 @@ public class PlayState extends GameState {
         counter++;
 
         batch.begin();
-        mapManager.drawMirrorObjects(batch);
+        mapManager.drawInteractableObjects(batch);
         player.updateAnimation(delta, batch);
         player.drawRainEffect(batch, delta);
         if (projectile != null)
@@ -111,20 +117,6 @@ public class PlayState extends GameState {
         map.dispose();
     }
 
-    private void handleCamera(float delta) {
-        Vector3 position = camera.position;
-        if (debugMode) {
-            position.x = camera.position.x + (player.getPosition().x * PPM - camera.position.x) * .2f;
-            position.y = camera.position.y + (player.getPosition().y * PPM - camera.position.y) * .2f;
-        } else {
-            position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
-            position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;
-        }
-
-        camera.position.set(position);
-        camera.update();
-    }
-
     private void setFullscreenMode() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
             isFullscreen = !isFullscreen;
@@ -138,5 +130,19 @@ public class PlayState extends GameState {
         } else {
             Gdx.graphics.setWindowedMode(1280, 720);
         }
+    }
+
+    private void handleCamera(float delta) {
+        Vector3 position = camera.position;
+        if (debugMode) {
+            position.x = camera.position.x + (Player.Instance.getPosition().x * PPM - camera.position.x) * .2f;
+            position.y = camera.position.y + (Player.Instance.getPosition().y * PPM - camera.position.y) * .2f;
+        } else {
+            position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
+            position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;
+        }
+
+        camera.position.set(new Vector3(position.x, position.y, camera.position.z));
+        camera.update();
     }
 }

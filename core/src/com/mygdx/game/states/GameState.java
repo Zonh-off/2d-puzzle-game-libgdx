@@ -3,6 +3,7 @@ package com.mygdx.game.states;
 import com.mygdx.game.Application;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.manager.CameraManager;
 import com.mygdx.game.manager.GameStateManager;
 
 public abstract class GameState {
@@ -17,7 +18,7 @@ public abstract class GameState {
         this.gsm = gsm;
         this.app = (Application) gsm.application();
         batch = app.getBatch();
-        camera = app.getCamera();
+        camera = CameraManager.Instance.getCamera();
     }
 
     public void resize(int w, int h) {
