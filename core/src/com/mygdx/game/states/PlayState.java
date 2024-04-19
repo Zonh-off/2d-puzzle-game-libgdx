@@ -4,19 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mygdx.game.manager.CameraManager;
-import com.mygdx.game.ui.Hud;
 import com.mygdx.game.Player;
 import com.mygdx.game.Projectile;
+import com.mygdx.game.manager.CameraManager;
 import com.mygdx.game.manager.GameStateManager;
-import com.mygdx.game.manager.MapManager;
+import com.mygdx.game.ui.Hud;
 import com.mygdx.game.utils.Assets;
+import com.mygdx.game.utils.LevelLoader;
+import com.mygdx.game.utils.MyContactListener;
 
 import static com.mygdx.game.utils.Constants.PPM;
 
@@ -25,14 +25,13 @@ public class PlayState extends GameState {
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
     private Player player;
-    private Projectile projectile = null;
-    private TiledMap map;
     private Hud hud;
     private Integer counter = 0;
     private boolean isFullscreen = false;
     private boolean debugMode = false;
-    private MapManager mapManager;
     private OrthographicCamera camera;
+    private LevelLoader levelLoader;
+    private boolean projspawned = false;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -41,14 +40,12 @@ public class PlayState extends GameState {
 
         player = new Player(new Vector2(Assets.level0.getProperties().get("width", Integer.class) * 32 / 2,
                 Assets.level0.getProperties().get("height", Integer.class) * 32 / 2), world);
-
         camera = CameraManager.Instance.getCamera();
 
-        world.setContactListener(player);
-        map = Assets.level0;
+//        world.setContactListener(player);
+        levelLoader = new LevelLoader(world);
 
-        mapManager = new MapManager();
-        mapManager.createLevelMap(world, map);
+        world.setContactListener(new MyContactListener());
 
         hud = new Hud(camera);
     }
@@ -58,18 +55,24 @@ public class PlayState extends GameState {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
-            map = Assets.level0;
-            mapManager.createLevelMap(world, map);
+            levelLoader.setLevel(0);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
-            map = Assets.level1;
-            mapManager.createLevelMap(world, map);
+            levelLoader.setLevel(1);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.G) && projectile == null) {
-            projectile = new Projectile(world, player.getPosition().x * 32, player.getPosition().y * 32);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F4)) {
+
         }
+
+        if (Projectile.Instance != null && !projspawned) {
+            projspawned = true;
+            Projectile.Instance.setDir(Player.Instance.getLookingDir());
+        }
+
         player.update(delta);
         handleCamera(delta);
+
 //        System.out.println(camera.getCamera().position + " : " + player.getPosition());
 
         setFullscreenMode();
@@ -81,8 +84,8 @@ public class PlayState extends GameState {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         ScreenUtils.clear(0.09f, 0.08f, 0.15f, 1);
 
-        mapManager.orthogonalTiledMapRenderer().setView(camera);
-        mapManager.orthogonalTiledMapRenderer().render();
+        levelLoader.getMapManager().orthogonalTiledMapRenderer().setView(camera);
+        levelLoader.getMapManager().orthogonalTiledMapRenderer().render();
         batch.setProjectionMatrix(camera.combined);
 
 
@@ -100,11 +103,11 @@ public class PlayState extends GameState {
         counter++;
 
         batch.begin();
-        mapManager.drawInteractableObjects(batch);
+        levelLoader.getMapManager().drawInteractableObjects(batch);
         player.updateAnimation(delta, batch);
         player.drawRainEffect(batch, delta);
-        if (projectile != null)
-            projectile.updateAnimation(batch, delta);
+        if (Projectile.Instance != null)
+            Projectile.Instance.updateAnimation(batch);
         batch.end();
     }
 
@@ -112,9 +115,9 @@ public class PlayState extends GameState {
     public void dispose() {
         batch.dispose();
         world.dispose();
-        mapManager.orthogonalTiledMapRenderer().dispose();
+        levelLoader.getMapManager().orthogonalTiledMapRenderer().dispose();
         box2DDebugRenderer.dispose();
-        map.dispose();
+        levelLoader.getMap().dispose();
     }
 
     private void setFullscreenMode() {
@@ -138,8 +141,8 @@ public class PlayState extends GameState {
             position.x = camera.position.x + (Player.Instance.getPosition().x * PPM - camera.position.x) * .2f;
             position.y = camera.position.y + (Player.Instance.getPosition().y * PPM - camera.position.y) * .2f;
         } else {
-            position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2;
-            position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2;
+            position.x = Assets.level0.getProperties().get("width", Integer.class) * 32 / 2 + (Player.Instance.getPosition().x * PPM - camera.position.x) * .05f;
+            position.y = Assets.level0.getProperties().get("height", Integer.class) * 32 / 2 + (Player.Instance.getPosition().y * PPM - camera.position.y) * .025f;
         }
 
         camera.position.set(new Vector3(position.x, position.y, camera.position.z));

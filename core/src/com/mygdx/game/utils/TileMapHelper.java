@@ -19,17 +19,17 @@ public class TileMapHelper {
         parseTiledObjectLayer(tiledMap.getLayers().get("colliders").getObjects(), true);
     }
 
-    public void parseTiledObjectLayer(MapObjects mapObjects, boolean isCollide){
-        if(isCollide) {
-            for(MapObject mapObject : mapObjects){
-                if(mapObject instanceof PolygonMapObject){
-                    createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_PLAYER, (short) 0);
+    public void parseTiledObjectLayer(MapObjects mapObjects, boolean isCollide) {
+        if (isCollide) {
+            for (MapObject mapObject : mapObjects) {
+                if (mapObject instanceof PolygonMapObject) {
+                    createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, (short) (BIT_PLAYER | BIT_PROJECTILE), (short) 0);
                 }
             }
         } else {
-            for(MapObject mapObject : mapObjects){
-                if(mapObject instanceof PolygonMapObject){
-                    createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, BIT_WALL, (short) 0);
+            for (MapObject mapObject : mapObjects) {
+                if (mapObject instanceof PolygonMapObject) {
+                    createStaticBody(world, (PolygonMapObject) mapObject, BIT_WALL, (short) (BIT_WALL | BIT_PROJECTILE), (short) 0);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class TileMapHelper {
     private Shape createPolygonShape(PolygonMapObject polygonMapObject) {
         float[] vertices = polygonMapObject.getPolygon().getTransformedVertices();
         Vector2[] worldVertices = new Vector2[vertices.length / 2];
-        for(int i = 0; i < vertices.length / 2; i++){
+        for (int i = 0; i < vertices.length / 2; i++) {
             worldVertices[i] = new Vector2(vertices[i * 2] / Constants.PPM, vertices[i * 2 + 1] / Constants.PPM);
         }
         PolygonShape shape = new PolygonShape();

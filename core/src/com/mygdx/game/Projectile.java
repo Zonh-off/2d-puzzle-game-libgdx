@@ -3,33 +3,63 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.objects.Arrow;
 import com.mygdx.game.utils.Assets;
+import com.mygdx.game.utils.MyContactListener;
 
 import static com.mygdx.game.utils.Constants.*;
 
-public class Projectile {
+public class Projectile extends MyContactListener {
+    public static Projectile Instance;
     private float posX = 0;
     private float posY = 0;
-    private TextureRegion texture;
+    private float velPower = 2;
+    private TextureRegion texture = Assets.projectile;
     private World world;
     private Body body;
+    private Arrow arrow = null;
 
     public Projectile(World world, float posX, float posY) {
+        Instance = this;
         this.posX = posX;
         this.posY = posY;
         this.world = world;
-        body = createBody(posX, posY, 32, 32, false, BIT_PLAYER, BIT_WALL, (short) 0);
+        body = createBody(posX, posY, 32, 32, false, BIT_PROJECTILE, (short) (BIT_ARROW | BIT_DESTROYER | BIT_WALL), (short) 0);
     }
 
     public void update(float deltaTime) {
 
     }
 
-    public void updateAnimation(SpriteBatch batch, float delta) {
-        setBatchTexture(batch, Assets.projectile);
+    public void updateAnimation(SpriteBatch batch) {
+        setBatchTexture(batch);
     }
 
-    private void setBatchTexture(SpriteBatch batch, TextureRegion texture) {
+    public void setDir(int dir) {
+        switch (dir) {
+            case 0:
+                body.setLinearVelocity(1 * velPower, 0 * velPower);
+                break;
+            case 1:
+                body.setLinearVelocity(0 * velPower, -1 * velPower);
+                break;
+            case 2:
+                body.setLinearVelocity(-1 * velPower, 0 * velPower);
+                break;
+            case 3:
+                body.setLinearVelocity(0 * velPower, 1 * velPower);
+                break;
+        }
+    }
+
+    public void destroyProjectile() {
+        System.out.println(Player.Instance);
+        if (body != null && Player.Instance != null) {
+            Instance = null;
+        }
+    }
+
+    public void setBatchTexture(SpriteBatch batch) {
         batch.draw(
                 texture,
                 body.getPosition().x * PPM - ((float) Assets.idle_down_sheet.getRegionWidth() / 2),
@@ -37,7 +67,6 @@ public class Projectile {
     }
 
     private Body createBody(float x, float y, int width, int height, boolean isStatic, short cBits, short mBits, short gIndex) {
-        Body pBody;
         BodyDef def = new BodyDef();
 
         if (isStatic)
@@ -47,10 +76,10 @@ public class Projectile {
 
         def.position.set(x / PPM, y / PPM);
         def.fixedRotation = true;
-        pBody = world.createBody(def);
+        body = world.createBody(def);
 
-//        PolygonShape shape = new PolygonShape();
-//        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
+        //        PolygonShape shape = new PolygonShape();
+        //        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
         CircleShape shape = new CircleShape();
         shape.setRadius(0.2f);
@@ -62,9 +91,18 @@ public class Projectile {
         fixtureDef.filter.maskBits = mBits; // Collide with
         fixtureDef.filter.groupIndex = gIndex;
 
-        pBody.createFixture(fixtureDef).getBody();
+        body.setUserData("Projectile");
+        body.createFixture(fixtureDef).getBody();
         shape.dispose();
 
-        return pBody;
+        return body;
+    }
+
+    public Arrow getArrow() {
+        return arrow;
+    }
+
+    public void setArrow(Arrow arrow) {
+        this.arrow = arrow;
     }
 }

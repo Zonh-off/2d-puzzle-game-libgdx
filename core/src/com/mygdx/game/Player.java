@@ -5,7 +5,6 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -17,15 +16,16 @@ import java.util.Objects;
 
 import static com.mygdx.game.utils.Constants.*;
 
-public class Player implements ContactListener {
+public class Player {
     public static Player Instance;
 
     private World world;
     private Body bPlayer;
 
-    private float speed = 2.5f;
+    private float speed = 5f; // 2.5
     private Vector2 vel = new Vector2(0, 0);
-    private Vector2 lastVel = new Vector2(1, 0);
+    private Vector2 lastVel = new Vector2(0, 0);
+    private int lookingDir = 0;
     private float idleStateTime = 1;
     private float walkStateTime = 4;
     private RayHandler rayHandler;
@@ -46,12 +46,13 @@ public class Player implements ContactListener {
         rayHandler.setAmbientLight(.8f);
         pointLight.attachToBody(bPlayer);
 
-        bPlayer = createBody(startPosition.x, startPosition.y, 32, 32, false, BIT_PLAYER, BIT_WALL, (short) 0);
+        bPlayer = createBody(startPosition.x, startPosition.y, 32, 32, false, BIT_PLAYER, (short) (BIT_WALL | BIT_ARROW | BIT_SPAWNER), (short) 0);
     }
 
     public void update(float deltaTime) {
         handleInput(deltaTime);
         handleInteract();
+//        System.out.println("Last Velocity: " + lookingDir);
     }
 
     public void updateAnimation(float delta, SpriteBatch batch) {
@@ -67,21 +68,27 @@ public class Player implements ContactListener {
 
         if (vel.x > 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
+            lookingDir = 0;
         }
         if (vel.x < 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
+            lookingDir = 2;
         }
         if (vel.y > 0 && lastVel.x > 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
+            lookingDir = 3;
         }
         if (vel.y > 0 && lastVel.x < 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
+            lookingDir = 3;
         }
         if (vel.y < 0 && lastVel.x > 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_right_anim.getKeyFrame(walkStateTime, true), false);
+            lookingDir = 1;
         }
         if (vel.y < 0 && lastVel.x < 0) {
             setBatchTexture(batch, (TextureRegion) Assets.walk_left_anim.getKeyFrame(walkStateTime, true), false);
+            lookingDir = 1;
         }
         if (lastVel.x > 0 && vel.isZero()) {
             setBatchTexture(batch, (TextureRegion) Assets.idle_right_anim.getKeyFrame(idleStateTime, true), false);
@@ -115,6 +122,10 @@ public class Player implements ContactListener {
 
     public Vector2 getPosition() {
         return bPlayer.getPosition();
+    }
+
+    public int getLookingDir() {
+        return lookingDir;
     }
 
     public RayHandler GetRaycastHandler() {
@@ -163,6 +174,7 @@ public class Player implements ContactListener {
     // interacting with objects
     public void handleInteract() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.F) && interactableObject != null) {
+            System.out.println("Interact!");
             interactableObject.Interact();
         }
     }
@@ -185,7 +197,7 @@ public class Player implements ContactListener {
 //        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(0.6f);
+        shape.setRadius(.7f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -194,34 +206,18 @@ public class Player implements ContactListener {
         fixtureDef.filter.maskBits = mBits; // Collide with
         fixtureDef.filter.groupIndex = gIndex;
 
+        pBody.setUserData("Player");
         pBody.createFixture(fixtureDef).getBody();
         shape.dispose();
 
         return pBody;
     }
 
-    @Override
-    public void beginContact(Contact contact) {
-        Fixture fA = contact.getFixtureA();
-        Fixture fB = contact.getFixtureB();
-        if (fB.getBody().getUserData() instanceof IInteractable) {
-            interactableObject = (IInteractable) fB.getBody().getUserData();
-            System.out.println("Type: " + interactableObject);
-        }
+    public IInteractable getInteractableObject() {
+        return interactableObject;
     }
 
-    @Override
-    public void endContact(Contact contact) {
-        interactableObject = null;
-    }
-
-    @Override
-    public void preSolve(Contact contact, Manifold manifold) {
-
-    }
-
-    @Override
-    public void postSolve(Contact contact, ContactImpulse contactImpulse) {
-
+    public void setInteractableObject(IInteractable interactableObject) {
+        this.interactableObject = interactableObject;
     }
 }

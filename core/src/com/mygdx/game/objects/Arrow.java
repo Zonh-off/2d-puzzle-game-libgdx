@@ -2,26 +2,29 @@ package com.mygdx.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.utils.Assets;
 
 import static com.mygdx.game.utils.Constants.*;
 
-public class MirrorBox extends InteractableBaseComponent {
+public class Arrow extends InteractableBaseComponent {
     private float posX = 0;
     private float posY = 0;
-    private TextureRegion texture = Assets.mirror_ne;
+    private TextureRegion texture = Assets.arrow_right;
     private World world;
     private int dir = 0;
+    private Vector2 vecotrDir = new Vector2(0, 0);
 
-    public MirrorBox(World world, float posX, float posY, int given_dir) {
+    public Arrow(World world, float posX, float posY, int given_dir) {
         super(world, posX, posY);
 
         this.world = world;
         this.posX = posX;
         this.posY = posY;
         this.dir = given_dir;
-        createBody(posX * PPM, posY * PPM, 48, 48, true, BIT_WALL, BIT_PLAYER, (short) 0);
+        this.createBody(posX * PPM, posY * PPM, 48, 48, true, BIT_ARROW, (short) (BIT_PLAYER | BIT_PROJECTILE), (short) 0);
         setDir(dir);
     }
 
@@ -33,18 +36,31 @@ public class MirrorBox extends InteractableBaseComponent {
         }
         switch (dir) {
             case 0:
-                texture = Assets.mirror_ne;
+                texture = Assets.arrow_right;
                 break;
             case 1:
-                texture = Assets.mirror_es;
+                texture = Assets.arrow_down;
                 break;
             case 2:
-                texture = Assets.mirror_sw;
+                texture = Assets.arrow_left;
                 break;
             case 3:
-                texture = Assets.mirror_wn;
+                texture = Assets.arrow_up;
                 break;
         }
+        setTexture(texture);
+    }
+
+    public float getPosX() {
+        return posX;
+    }
+
+    public float getPosY() {
+        return posY;
+    }
+
+    public int getDir() {
+        return dir;
     }
 
     @Override
@@ -56,10 +72,10 @@ public class MirrorBox extends InteractableBaseComponent {
     public void setTexture(TextureRegion texture) {
         super.setTexture(this.texture);
     }
+
+    @Override
     public void setBatchTexture(SpriteBatch batch) {
-        if(texture != null) {
-            batch.draw(texture, posX * PPM - ((float) Assets.mirror_ne.getRegionWidth() / 2), posY * PPM - ((float) Assets.mirror_ne.getRegionHeight() / 2));
-        }
+        super.setBatchTexture(batch);
     }
 
     @Override

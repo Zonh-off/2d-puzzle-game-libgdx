@@ -8,22 +8,37 @@ import com.mygdx.game.utils.Assets;
 
 import static com.mygdx.game.utils.Constants.*;
 
-public class ProjectileSpawner extends InteractableBaseComponent {
-    private TextureRegion texture = Assets.projectileSpawner;
+public class Destroyer extends InteractableBaseComponent {
+    private float posX = 0;
+    private float posY = 0;
+    private World world;
 
-    public ProjectileSpawner(World world, float posX, float posY) {
+    private TextureRegion texture = Assets.destroyer;
+
+    public Destroyer(World world, float posX, float posY) {
         super(world, posX, posY);
-        createBody(posX * PPM, posY * PPM, 48, 48, true, BIT_WALL, BIT_PLAYER, (short) 0);
+        this.posX = posX;
+        this.posY = posY;
+        this.world = world;
+        this.createBody(posX * PPM, posY * PPM, 48, 48, true, BIT_DESTROYER, BIT_PROJECTILE, (short) 0);
+        setTexture(texture);
     }
 
     @Override
     public void Interact() {
-        System.out.println("Interact with spawner");
+
     }
 
     @Override
     public void setTexture(TextureRegion texture) {
         super.setTexture(this.texture);
+    }
+
+    @Override
+    public void setBatchTexture(SpriteBatch batch) {
+        if (texture != null) {
+            batch.draw(texture, posX * PPM - ((float) Assets.arrow_right.getRegionWidth() / 2), posY * PPM - ((float) Assets.arrow_right.getRegionHeight() / 2));
+        }
     }
 
     @Override

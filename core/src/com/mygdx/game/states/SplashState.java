@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.game.manager.CameraManager;
 import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
 
@@ -20,9 +19,9 @@ public class SplashState extends GameState {
     public SplashState(GameStateManager gsm) {
         super(gsm);
         stage = new Stage(new ScreenViewport());
-        tex = Assets.mirror_es;
+        tex = Assets.splashLogo;
         splashLogo = new Image(tex);
-        splashLogo.setSize(128, 128);
+        splashLogo.setSize(256, 256);
         splashLogo.setPosition(Gdx.graphics.getWidth() / 2 - splashLogo.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - splashLogo.getHeight() / 2);
         stage.addActor(splashLogo);
@@ -31,12 +30,15 @@ public class SplashState extends GameState {
     @Override
     public void update(float delta) {
         acc += delta;
-        if(acc >= 3) {
-            splashLogo.setPosition(Gdx.graphics.getWidth() / 2 - splashLogo.getWidth() / 2,
-                    Gdx.graphics.getHeight() / 2 - splashLogo.getHeight() / 2 + 200);
-            if(acc >= 4)
-                gsm.setState(GameStateManager.State.MENU);
+        splashLogo.setSize(256 + 10 * acc, 256 + 10 * acc);
+        splashLogo.setPosition(Gdx.graphics.getWidth() / 2 - splashLogo.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - splashLogo.getHeight() / 2);
+        if (acc >= 4) {
+            tex = null;
+            splashLogo = new Image(tex);
+            gsm.setState(GameStateManager.State.MENU);
         }
+
     }
 
     @Override

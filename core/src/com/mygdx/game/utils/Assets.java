@@ -14,6 +14,8 @@ public class Assets {
     // Character
     public static Texture character;
     public static Texture baseTiles;
+    public static Texture logo;
+    public static Texture background;
     public static TextureRegion idle_down_sheet;
     public static Animation idle_right_anim;
     public static Animation idle_left_anim;
@@ -23,14 +25,18 @@ public class Assets {
     public static Animation shadow_anim;
 
     // Mirrors
-    public static TextureRegion mirror_ne;
-    public static TextureRegion mirror_es;
-    public static TextureRegion mirror_sw;
-    public static TextureRegion mirror_wn;
+    public static TextureRegion arrow_right;
+    public static TextureRegion arrow_down;
+    public static TextureRegion arrow_left;
+    public static TextureRegion arrow_up;
 
     // Projectile
     public static TextureRegion projectile;
-    public static TextureRegion projectileSpawner;
+    public static TextureRegion spawner;
+    public static TextureRegion destroyer;
+
+    public static TextureRegion splashLogo;
+    public static TextureRegion backgroundMenu;
 
     // Particles
     public static ParticleEffect rainEffect;
@@ -52,16 +58,22 @@ public class Assets {
     public static void load() {
         character = loadTexture("AnimationSheet_Character.png");
         baseTiles = loadTexture("maps/basetiles.png");
+        logo = loadTexture("logo.png");
+        background = loadTexture("skin/background.png");
         menuSkin = loadSkin("skin/skin.json");
 
         //rainAtlas = new TextureAtlas().load(Gdx.files.internal("particles/rain.png"));
         rainEffect = new ParticleEffect();
         rainEffect.load(Gdx.files.internal("particles/rain.p"), Gdx.files.internal("particles/"));
 
+        splashLogo = new TextureRegion(logo, 0, 0, 1024, 1024);
+        backgroundMenu = new TextureRegion(background, 0, 0, 300, 164);
+
         idle_down_sheet = new TextureRegion(character, 0, 0, 32, 32);
 
         projectile = new TextureRegion(baseTiles, 96, 96, 32, 32);
-        projectileSpawner = new TextureRegion(baseTiles, 96, 160, 32, 32);
+        spawner = new TextureRegion(baseTiles, 96, 160, 32, 32);
+        destroyer = new TextureRegion(baseTiles, 64, 192, 32, 32);
 
         idle_right_anim = new Animation(0.25f,
                 new TextureRegion(character, 0, 0, 32, 32),
@@ -88,10 +100,10 @@ public class Assets {
                 new TextureRegion(character, 192, 0, 32, 32),
                 new TextureRegion(character, 224, 0, 32, 32));
 
-        mirror_ne = new TextureRegion(baseTiles, 32, 96, 32, 32);
-        mirror_es = new TextureRegion(baseTiles, 32, 128, 32, 32);
-        mirror_sw = new TextureRegion(baseTiles, 32, 160, 32, 32);
-        mirror_wn = new TextureRegion(baseTiles, 32, 192, 32, 32);
+        arrow_right = new TextureRegion(baseTiles, 32, 96, 32, 32);
+        arrow_down = new TextureRegion(baseTiles, 32, 128, 32, 32);
+        arrow_left = new TextureRegion(baseTiles, 32, 160, 32, 32);
+        arrow_up = new TextureRegion(baseTiles, 32, 192, 32, 32);
 
 
         TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
