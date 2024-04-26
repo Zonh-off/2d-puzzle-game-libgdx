@@ -44,6 +44,10 @@ public class Assets {
     // Map
     public static TiledMap level0;
     public static TiledMap level1;
+    public static TiledMap level2;
+    public static TiledMap level3;
+    public static TiledMap level4;
+    public static TiledMap level5;
 
     public static Skin menuSkin;
 
@@ -112,5 +116,9 @@ public class Assets {
         params.generateMipMaps = true;
         level0 = new TmxMapLoader().load("maps/map0.tmx", params);
         level1 = new TmxMapLoader().load("maps/map1.tmx", params);
+        level2 = new TmxMapLoader().load("maps/map2.tmx", params);
+        level3 = new TmxMapLoader().load("maps/map3.tmx", params);
+        level4 = new TmxMapLoader().load("maps/map4.tmx", params);
+        level5 = new TmxMapLoader().load("maps/map5.tmx", params);
     }
 }

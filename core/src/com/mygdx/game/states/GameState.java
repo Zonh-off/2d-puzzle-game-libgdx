@@ -1,8 +1,8 @@
 package com.mygdx.game.states;
 
-import com.mygdx.game.Application;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.Application;
 import com.mygdx.game.manager.CameraManager;
 import com.mygdx.game.manager.GameStateManager;
 
@@ -16,7 +16,7 @@ public abstract class GameState {
 
     protected GameState(GameStateManager gsm) {
         this.gsm = gsm;
-        this.app = (Application) gsm.application();
+        this.app = gsm.application();
         batch = app.getBatch();
         camera = CameraManager.Instance.getCamera();
     }
@@ -26,6 +26,8 @@ public abstract class GameState {
     }
 
     public abstract void update(float delta);
+
     public abstract void render(float delta);
+
     public abstract void dispose();
 }

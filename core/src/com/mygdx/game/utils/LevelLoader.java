@@ -26,6 +26,18 @@ public class LevelLoader {
             case 1:
                 map = Assets.level1;
                 break;
+            case 2:
+                map = Assets.level2;
+                break;
+            case 3:
+                map = Assets.level3;
+                break;
+            case 4:
+                map = Assets.level4;
+                break;
+            case 5:
+                map = Assets.level5;
+                break;
         }
         mapManager.createLevelMap(world, map);
     }

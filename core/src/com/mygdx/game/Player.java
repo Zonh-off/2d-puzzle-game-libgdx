@@ -21,10 +21,9 @@ public class Player {
 
     private World world;
     private Body bPlayer;
-
-    private float speed = 5f; // 2.5
+    private float speed = SPEED;
     private Vector2 vel = new Vector2(0, 0);
-    private Vector2 lastVel = new Vector2(0, 0);
+    private Vector2 lastVel = new Vector2(1, 0);
     private int lookingDir = 0;
     private float idleStateTime = 1;
     private float walkStateTime = 4;
@@ -197,7 +196,7 @@ public class Player {
 //        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(.7f);
+        shape.setRadius(.5f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

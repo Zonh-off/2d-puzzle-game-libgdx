@@ -8,7 +8,9 @@ public final class Constants {
     public static final short BIT_SPAWNER = 16;
     public static final short BIT_DESTROYER = 32;
 
-    public static final float SCALE = 3f;
+    public static final float SCALE = 3f; // default 3
+    public static final float SPEED = 2.5f; // default 2.5
+    public static final float COLLISION_RADIUS = 0.3f;
     public static final float ONE_ON_ROOT_TWO = (float) (1.0 / Math.sqrt(2));
 
     public static final float PPM = 32;

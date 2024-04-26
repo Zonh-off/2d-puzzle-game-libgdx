@@ -10,9 +10,9 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Player;
-import com.mygdx.game.Projectile;
 import com.mygdx.game.manager.CameraManager;
 import com.mygdx.game.manager.GameStateManager;
+import com.mygdx.game.objects.Projectile;
 import com.mygdx.game.ui.Hud;
 import com.mygdx.game.utils.Assets;
 import com.mygdx.game.utils.LevelLoader;
@@ -27,6 +27,7 @@ public class PlayState extends GameState {
     private Player player;
     private Hud hud;
     private Integer counter = 0;
+    private Integer levelId = 0;
     private boolean isFullscreen = false;
     private boolean debugMode = false;
     private OrthographicCamera camera;
@@ -55,10 +56,13 @@ public class PlayState extends GameState {
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) {
+            levelId = 0;
             levelLoader.setLevel(0);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3)) {
-            levelLoader.setLevel(1);
+            levelId++;
+            System.out.println("LevelID: " + levelId);
+            levelLoader.setLevel(levelId);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F4)) {

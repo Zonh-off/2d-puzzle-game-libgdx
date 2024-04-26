@@ -8,8 +8,10 @@ public class DesktopLauncher {
     public static void main(String[] arg) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setForegroundFPS(60);
+        config.setIdleFPS(15);
+        config.setResizable(false);
         config.useVsync(false);
-        config.setTitle("My GDX Game");
+        config.setTitle("ARROWS!");
         config.setWindowedMode(1280, 720);
         config.disableAudio(true);
         //config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());

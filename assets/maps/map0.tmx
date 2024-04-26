@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="95">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="100">
  <tileset firstgid="1" source="maptiles.tsx"/>
  <objectgroup id="3" name="colliders">
   <object id="65" x="768" y="0">
-   <polygon points="0,0 0,480 32,480 32,0"/>
+   <polygon points="-256,160 -256,320 -224,320 -224,160"/>
+  </object>
+  <object id="99" x="768" y="0">
+   <polygon points="-256,160 -256,320 -224,320 -224,160"/>
   </object>
   <object id="66" x="32" y="0">
-   <polygon points="0,0 0,32 736,32 736,0"/>
+   <polygon points="256,128 256,160 512,160 512,128"/>
   </object>
   <object id="67" x="32" y="0">
-   <polygon points="0,0 -32,0 -32,480 0,480"/>
+   <polygon points="256,128 224,128 224,320 256,320"/>
   </object>
   <object id="68" x="32" y="448" visible="0">
    <polygon points="0,0 0,32 736,32 736,0"/>
   </object>
   <object id="69" x="32" y="448">
-   <polygon points="0,0 0,32 736,32 736,0"/>
+   <polygon points="224,-128 224,-96 512,-96 512,-128"/>
   </object>
  </objectgroup>
  <layer id="4" name="Layer" width="25" height="15">

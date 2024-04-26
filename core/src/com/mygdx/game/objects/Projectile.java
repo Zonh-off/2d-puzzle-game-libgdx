@@ -1,9 +1,8 @@
-package com.mygdx.game;
+package com.mygdx.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
-import com.mygdx.game.objects.Arrow;
 import com.mygdx.game.utils.Assets;
 import com.mygdx.game.utils.MyContactListener;
 
@@ -53,9 +52,9 @@ public class Projectile extends MyContactListener {
     }
 
     public void destroyProjectile() {
-        System.out.println(Player.Instance);
-        if (body != null && Player.Instance != null) {
+        if (Instance != null) {
             Instance = null;
+            System.out.println("destory");
         }
     }
 
@@ -82,7 +81,7 @@ public class Projectile extends MyContactListener {
         //        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(0.2f);
+        shape.setRadius(0.05f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

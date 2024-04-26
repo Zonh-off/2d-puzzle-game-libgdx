@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.utils.Assets;
 
+import static com.mygdx.game.utils.Constants.COLLISION_RADIUS;
 import static com.mygdx.game.utils.Constants.PPM;
 
 public abstract class InteractableBaseComponent implements IInteractable {
@@ -49,7 +50,7 @@ public abstract class InteractableBaseComponent implements IInteractable {
         //        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(0.001f);
+        shape.setRadius(COLLISION_RADIUS);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

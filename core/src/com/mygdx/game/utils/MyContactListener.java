@@ -2,13 +2,11 @@ package com.mygdx.game.utils;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.Player;
-import com.mygdx.game.Projectile;
-import com.mygdx.game.objects.Arrow;
-import com.mygdx.game.objects.Destroyer;
-import com.mygdx.game.objects.IInteractable;
+import com.mygdx.game.objects.*;
 
 public class MyContactListener implements ContactListener {
     private LevelLoader levelLoader;
+    private InteractableBaseComponent obj;
 
     @Override
     public void beginContact(Contact contact) {
@@ -46,11 +44,14 @@ public class MyContactListener implements ContactListener {
                 }
                 break;
             case Constants.BIT_PROJECTILE | Constants.BIT_WALL:
+                if (Projectile.Instance != null)
+                    Projectile.Instance.destroyProjectile();
+                break;
             case Constants.BIT_PROJECTILE | Constants.BIT_DESTROYER:
                 Destroyer destroyer = (Destroyer) fixtureA.getBody().getUserData();
                 if (destroyer != null) {
                     Projectile.Instance.destroyProjectile();
-                    levelLoader.setLevel(1);
+//                    levelLoader.setLevel(1);
                 }
                 break;
         }
@@ -63,7 +64,7 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-        // Handle pre-solve if needed
+
     }
 
     @Override

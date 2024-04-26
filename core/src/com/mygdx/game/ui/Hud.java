@@ -27,16 +27,16 @@ public class Hud {
         table.setFillParent(true);
 
         countLabel = new Label(String.format("FPS: %03d", counter), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        countLabel.setFontScale(2f);
+        countLabel.setFontScale(1f);
         table.add(countLabel).expandX().padTop(10);
         stage.addActor(table);
     }
 
-    public Stage getStage(){
+    public Stage getStage() {
         return stage;
     }
 
-    public void setCounter(int i){
+    public void setCounter(int i) {
         counter = i;
         countLabel.setText(String.format("FPS: %03d", counter));
     }

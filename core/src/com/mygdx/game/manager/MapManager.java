@@ -6,11 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Player;
-import com.mygdx.game.Projectile;
-import com.mygdx.game.objects.Arrow;
-import com.mygdx.game.objects.Destroyer;
-import com.mygdx.game.objects.InteractableBaseComponent;
-import com.mygdx.game.objects.Spawner;
+import com.mygdx.game.objects.*;
 import com.mygdx.game.utils.TileMapHelper;
 
 import java.util.HashSet;
@@ -34,6 +30,8 @@ public class MapManager {
         tileMapHelper = new TileMapHelper(world, map);
         isSpawner = false;
         removeInteractableObjects();
+        if (Projectile.Instance != null)
+            Projectile.Instance.destroyProjectile();
         TiledMapTileLayer objectsPos = (TiledMapTileLayer) map.getLayers().get("objects");
         TiledMapTileLayer spawnerPos = (TiledMapTileLayer) map.getLayers().get("spawner");
         for (int x = 0; x < map.getProperties().get("width", Integer.class); x++) {
@@ -61,9 +59,9 @@ public class MapManager {
         int count = 0;
         for (InteractableBaseComponent v : interactableObjectsList) {
             count++;
-            System.out.println(count + " Bodies: " + v.getBody());
+//            System.out.println(count + " Bodies: " + v.getBody());
         }
-        Player.Instance.setPosition(map.getProperties().get("width", Integer.class) / 2, map.getProperties().get("height", Integer.class) / 2);
+        Player.Instance.setPosition(map.getProperties().get("width", Integer.class) / 2 + 0.5f, map.getProperties().get("height", Integer.class) / 2 + 0.5f);
     }
 
     public OrthogonalTiledMapRenderer orthogonalTiledMapRenderer() {
@@ -80,7 +78,7 @@ public class MapManager {
     public void removeInteractableObjects() {
         for (InteractableBaseComponent v : interactableObjectsList) {
             world.destroyBody(v.getBody());
-            System.out.println("Bodies: " + v.getBody());
+//            System.out.println("Bodies: " + v.getBody());
         }
         interactableObjectsList.clear();
     }
