@@ -22,16 +22,15 @@ import static com.mygdx.game.utils.Constants.PPM;
 
 public class PlayState extends GameState {
 
-    private World world;
-    private Box2DDebugRenderer box2DDebugRenderer;
-    private Player player;
-    private Hud hud;
-    private Integer counter = 0;
+    private final World world;
+    private final Box2DDebugRenderer box2DDebugRenderer;
+    private final Player player;
+    private final Hud hud;
+    private final OrthographicCamera camera;
+    private final LevelLoader levelLoader;
     private Integer levelId = 0;
     private boolean isFullscreen = false;
     private boolean debugMode = false;
-    private OrthographicCamera camera;
-    private LevelLoader levelLoader;
     private boolean projspawned = false;
 
     public PlayState(GameStateManager gsm) {
@@ -104,7 +103,6 @@ public class PlayState extends GameState {
 
         hud.getStage().draw();
         hud.setCounter(Gdx.graphics.getFramesPerSecond());
-        counter++;
 
         batch.begin();
         levelLoader.getMapManager().drawInteractableObjects(batch);

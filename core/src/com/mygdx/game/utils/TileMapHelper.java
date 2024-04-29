@@ -10,12 +10,10 @@ import com.badlogic.gdx.physics.box2d.*;
 import static com.mygdx.game.utils.Constants.*;
 
 public class TileMapHelper {
-    private TiledMap tiledMap;
-    private World world;
+    private final World world;
 
     public TileMapHelper(World world, TiledMap tiledMap) {
         this.world = world;
-        this.tiledMap = tiledMap;
         parseTiledObjectLayer(tiledMap.getLayers().get("colliders").getObjects(), true);
     }
 

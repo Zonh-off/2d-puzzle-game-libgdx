@@ -11,15 +11,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Hud {
-    private Stage stage;
-    private Viewport viewport;
+    private final Stage stage;
+    private final Label countLabel;
     private Integer counter;
-    private Label countLabel;
 
     public Hud(OrthographicCamera camera) {
         counter = 699;
 
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        Viewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         stage = new Stage();
 
         Table table = new Table();

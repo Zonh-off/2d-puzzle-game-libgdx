@@ -9,12 +9,12 @@ import com.mygdx.game.utils.MyContactListener;
 import static com.mygdx.game.utils.Constants.*;
 
 public class Projectile extends MyContactListener {
+    private final TextureRegion texture = Assets.projectile;
+    private final World world;
     public static Projectile Instance;
     private float posX = 0;
     private float posY = 0;
-    private float velPower = 2;
-    private TextureRegion texture = Assets.projectile;
-    private World world;
+    private final float velPower = 2;
     private Body body;
     private Arrow arrow = null;
 

@@ -13,55 +13,54 @@ import java.util.HashSet;
 import java.util.Random;
 
 public class MapManager {
-    private HashSet<InteractableBaseComponent> interactableObjectsList = new HashSet<>();
+    private final HashSet<InteractableBaseComponent> interactableObjectsList = new HashSet<>();
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
-    private TiledMap map;
-    private TileMapHelper tileMapHelper;
     private World world;
-    private boolean isSpawner = false;
-    private Projectile projectile = null;
-    private Spawner spawner = null;
-    private Destroyer destroyer = null;
 
     public void createLevelMap(World world, TiledMap level) {
         this.world = world;
-        map = level;
-        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map);
-        tileMapHelper = new TileMapHelper(world, map);
-        isSpawner = false;
+        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(level);
+        TileMapHelper tileMapHelper = new TileMapHelper(world, level);
+
+        boolean isSpawner = false;
+
         removeInteractableObjects();
+
         if (Projectile.Instance != null)
             Projectile.Instance.destroyProjectile();
-        TiledMapTileLayer objectsPos = (TiledMapTileLayer) map.getLayers().get("objects");
-        TiledMapTileLayer spawnerPos = (TiledMapTileLayer) map.getLayers().get("spawner");
-        for (int x = 0; x < map.getProperties().get("width", Integer.class); x++) {
-            for (int y = 0; y < map.getProperties().get("height", Integer.class); y++) {
+
+        TiledMapTileLayer objectsPos = (TiledMapTileLayer) level.getLayers().get("objects");
+        TiledMapTileLayer spawnerPos = (TiledMapTileLayer) level.getLayers().get("spawner");
+        for (int x = 0; x < level.getProperties().get("width", Integer.class); x++) {
+            for (int y = 0; y < level.getProperties().get("height", Integer.class); y++) {
                 if (objectsPos.getCell(x, y) == null) continue;
                 addInteractableObjects(x + 0.5f, y + 0.5f);
 //                objects.setCell(x, y, null);
             }
         }
-        for (int x = 0; x < map.getProperties().get("width", Integer.class); x++) {
-            for (int y = 0; y < map.getProperties().get("height", Integer.class); y++) {
+
+        for (int x = 0; x < level.getProperties().get("width", Integer.class); x++) {
+            for (int y = 0; y < level.getProperties().get("height", Integer.class); y++) {
                 if (spawnerPos.getCell(x, y) == null) continue;
                 if (!isSpawner) {
                     isSpawner = true;
-                    spawner = new Spawner(world, x + 0.5f, y + 0.5f);
+
+                    Spawner spawner = new Spawner(world, x + 0.5f, y + 0.5f);
                     interactableObjectsList.add(spawner);
                 } else {
-                    destroyer = new Destroyer(world, x + 0.5f, y + 0.5f);
+                    Destroyer destroyer = new Destroyer(world, x + 0.5f, y + 0.5f);
                     interactableObjectsList.add(destroyer);
                 }
 
 //                objects.setCell(x, y, null);
             }
         }
-        int count = 0;
-        for (InteractableBaseComponent v : interactableObjectsList) {
-            count++;
+//        int count = 0;
+//        for (InteractableBaseComponent v : interactableObjectsList) {
+//            count++;
 //            System.out.println(count + " Bodies: " + v.getBody());
-        }
-        Player.Instance.setPosition(map.getProperties().get("width", Integer.class) / 2 + 0.5f, map.getProperties().get("height", Integer.class) / 2 + 0.5f);
+//        }
+        Player.Instance.setPosition(level.getProperties().get("width", Integer.class) / 2 + 0.5f, level.getProperties().get("height", Integer.class) / 2 + 0.5f);
     }
 
     public OrthogonalTiledMapRenderer orthogonalTiledMapRenderer() {
@@ -70,8 +69,8 @@ public class MapManager {
 
     public void addInteractableObjects(float posX, float posY) {
         Random rand = new Random();
-        Arrow newInteractableObject = new Arrow(world, posX, posY, rand.nextInt(0, 3));
 
+        Arrow newInteractableObject = new Arrow(world, posX, posY, rand.nextInt(0, 3));
         interactableObjectsList.add(newInteractableObject);
     }
 

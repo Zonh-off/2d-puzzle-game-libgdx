@@ -13,26 +13,23 @@ import com.mygdx.game.utils.Assets;
 
 
 public class MenuState extends GameState {
-    private TextButton startBtn;
-    private TextButton exitBtn;
-    private Image background;
-    private Stage stage;
+    private final Stage stage;
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
         stage = new Stage(new ScreenViewport());
 
-        background = new Image(Assets.background);
+        Image background = new Image(Assets.background);
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         background.setPosition(Gdx.graphics.getWidth() / 2 - background.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - background.getHeight() / 2);
 
-        startBtn = new TextButton("Start", Assets.menuSkin, "default");
+        TextButton startBtn = new TextButton("Start", Assets.menuSkin, "default");
         startBtn.setSize(240, 85);
         startBtn.setPosition(Gdx.graphics.getWidth() / 2 - startBtn.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - startBtn.getHeight() / 2);
 
-        exitBtn = new TextButton("Exit", Assets.menuSkin, "default");
+        TextButton exitBtn = new TextButton("Exit", Assets.menuSkin, "default");
         exitBtn.setSize(240, 85);
         exitBtn.setPosition(Gdx.graphics.getWidth() / 2 - startBtn.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - startBtn.getHeight() / 2 - 100);

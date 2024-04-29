@@ -13,7 +13,7 @@ public class GameStateManager {
     // Application Reference
     private final Application app;
 
-    private Stack<GameState> states;
+    private final Stack<GameState> states;
 
     public enum State {
         SPLASH,
@@ -40,7 +40,7 @@ public class GameStateManager {
     }
 
     public void dispose() {
-        for(GameState gs : states) {
+        for (GameState gs : states) {
             gs.dispose();
         }
         states.clear();
@@ -51,17 +51,20 @@ public class GameStateManager {
     }
 
     public void setState(State state) {
-        if(states.size() >= 1) {
+        if (states.size() >= 1) {
             states.pop().dispose();
         }
         states.push(getState(state));
     }
 
     private GameState getState(State state) {
-        switch(state) {
-            case SPLASH: return new SplashState(this);
-            case PLAY: return new PlayState(this);
-            case MENU: return new MenuState(this);
+        switch (state) {
+            case SPLASH:
+                return new SplashState(this);
+            case PLAY:
+                return new PlayState(this);
+            case MENU:
+                return new MenuState(this);
         }
         return null;
     }

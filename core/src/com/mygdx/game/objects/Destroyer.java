@@ -9,11 +9,10 @@ import com.mygdx.game.utils.Assets;
 import static com.mygdx.game.utils.Constants.*;
 
 public class Destroyer extends InteractableBaseComponent {
+    private final World world;
+    private final TextureRegion texture = Assets.destroyer;
     private float posX = 0;
     private float posY = 0;
-    private World world;
-
-    private TextureRegion texture = Assets.destroyer;
 
     public Destroyer(World world, float posX, float posY) {
         super(world, posX, posY);

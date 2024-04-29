@@ -10,7 +10,7 @@ import com.mygdx.game.manager.GameStateManager;
 import com.mygdx.game.utils.Assets;
 
 public class SplashState extends GameState {
-    private Stage stage;
+    private final Stage stage;
     private Image splashLogo;
 
     float acc = 0f;

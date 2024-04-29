@@ -2,11 +2,12 @@ package com.mygdx.game.utils;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.Player;
-import com.mygdx.game.objects.*;
+import com.mygdx.game.objects.Arrow;
+import com.mygdx.game.objects.Destroyer;
+import com.mygdx.game.objects.IInteractable;
+import com.mygdx.game.objects.Projectile;
 
 public class MyContactListener implements ContactListener {
-    private LevelLoader levelLoader;
-    private InteractableBaseComponent obj;
 
     @Override
     public void beginContact(Contact contact) {

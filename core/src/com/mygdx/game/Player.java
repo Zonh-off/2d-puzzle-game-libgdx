@@ -18,17 +18,17 @@ import static com.mygdx.game.utils.Constants.*;
 
 public class Player {
     public static Player Instance;
-
-    private World world;
     private Body bPlayer;
-    private float speed = SPEED;
+
+    private final World world;
+    private final float speed = SPEED;
+    private final RayHandler rayHandler;
+    private final PointLight pointLight;
+    private final Vector2 lastVel = new Vector2(1, 0);
     private Vector2 vel = new Vector2(0, 0);
-    private Vector2 lastVel = new Vector2(1, 0);
     private int lookingDir = 0;
     private float idleStateTime = 1;
     private float walkStateTime = 4;
-    private RayHandler rayHandler;
-    private PointLight pointLight;
     private IInteractable interactableObject = null;
 
     public Player(Vector2 startPosition, World world) {

@@ -11,7 +11,7 @@ import static com.mygdx.game.utils.Constants.PPM;
 public abstract class InteractableBaseComponent implements IInteractable {
     private float posX = 0;
     private float posY = 0;
-    private World world;
+    private final World world;
     private Body body;
     private TextureRegion texture;
 

@@ -10,12 +10,12 @@ import com.mygdx.game.utils.Assets;
 import static com.mygdx.game.utils.Constants.*;
 
 public class Arrow extends InteractableBaseComponent {
+    private final World world;
+    private final Vector2 vecotrDir = new Vector2(0, 0);
+    private TextureRegion texture = Assets.arrow_right;
     private float posX = 0;
     private float posY = 0;
-    private TextureRegion texture = Assets.arrow_right;
-    private World world;
     private int dir = 0;
-    private Vector2 vecotrDir = new Vector2(0, 0);
 
     public Arrow(World world, float posX, float posY, int given_dir) {
         super(world, posX, posY);

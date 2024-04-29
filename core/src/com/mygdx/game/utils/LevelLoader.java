@@ -6,9 +6,9 @@ import com.mygdx.game.manager.MapManager;
 
 public class LevelLoader {
     public static LevelLoader Instance;
-    private MapManager mapManager;
+    private final MapManager mapManager;
+    private final World world;
     private TiledMap map;
-    private World world;
 
     public LevelLoader(World world) {
         this.world = world;

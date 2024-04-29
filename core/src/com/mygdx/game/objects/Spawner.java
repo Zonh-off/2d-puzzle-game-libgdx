@@ -10,11 +10,10 @@ import com.mygdx.game.utils.Assets;
 import static com.mygdx.game.utils.Constants.*;
 
 public class Spawner extends InteractableBaseComponent {
+    private final World world;
+    private final TextureRegion texture = Assets.spawner;
     private float posX = 0;
     private float posY = 0;
-    private World world;
-
-    private TextureRegion texture = Assets.spawner;
 
     public Spawner(World world, float posX, float posY) {
         super(world, posX, posY);

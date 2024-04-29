@@ -12,12 +12,8 @@ import com.mygdx.game.utils.Assets;
 import static com.mygdx.game.utils.Constants.SCALE;
 
 public class Application extends ApplicationAdapter {
-
     public static Engine ashley;
-
-    private CameraManager camera;
     private SpriteBatch batch;
-
     private GameStateManager gsm;
 
     @Override
@@ -28,7 +24,7 @@ public class Application extends ApplicationAdapter {
 
         ashley = new Engine();
 
-        camera = new CameraManager();
+        CameraManager camera = new CameraManager();
         camera.getCamera().setToOrtho(false, w / SCALE, h / SCALE);
 
         batch = new SpriteBatch();
